@@ -43,9 +43,6 @@ echo export PATH >> /home/sferix/.profile
 
 # Copy over configuration files
 echo 'Copying Configuration Files'
-echo 'Installing Toga'
-DIR=firstRunFiles
-tar -xvf ${DIR}/toga.arm.bin.tar -C /home/sferix
 cp ${DIR}/sshd_config /etc/ssh/
 #cp ${DIR}/gpelogin /etc/sysconfig/
 cat ${DIR}/.bashrc >> /home/sferix/.profile
@@ -55,6 +52,14 @@ cp ${DIR}/.vimrc /home/sferix/
 cp ${DIR}/iptables /etc/iptables.rules
 cp ${DIR}/resolv.conf /etc/
 cp ${DIR}/ntp.conf /etc/
+
+# Install toga
+echo 'Installing Toga'
+DIR=firstRunFiles
+tar -xvf ${DIR}/toga.arm.bin.tar -C /home/sferix
+mkdir /home/sferix/public_html
+chown -R sferix /home/sferix
+
 
 echo 'Reboot recommended'
 
