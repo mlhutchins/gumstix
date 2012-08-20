@@ -11,6 +11,7 @@ opkg install ntp
 opkg install ntp-bin
 opkg install vim
 opkg install iptables
+opkg install gpsd
 
 opkg remove dropbear --force-removal-of-dependent-packages
 opkg install openssh
