@@ -1,19 +1,20 @@
 # Make and populate Gumstix microSD card for WWLLN
 
 # Copy necessary files from ~/bbImages to ~/Work/ and rename
-cp ~/bbImages/MLO-overo ~/Work/bitbake/MLO
+#cp ~/bbImages/MLO-overo ~/Work/bitbake/MLO
 # Use updated MLO instead
-cp ~/Work/Angstrom/mlo-updated ~/Work/bitbake/MLO
+#cp ~/Work/Angstrom/mlo-updated ~/Work/bitbake/MLO
 #cp ~/bbImages/uImage-overo.bin ~/Work/bitbake/uImage
-cp ~/bbImages/u-boot-overo.bin ~/Work/bitbake/u-boot.bin
+#cp ~/bbImages/u-boot-overo.bin ~/Work/bitbake/u-boot.bin
 #cp ~/Work/Angstrom/uImage ~/Work/bitbake/uImage
 #cp ~/Work/Angstrom/u-boot.bin ~/Work/bitbake/u-boot.bin
-cp ~/bbImages/omap3-console-image-overo.tar.bz2 ~/Work/bitbake/rootfs.tar.bz2
+#cp ~/bbImages/omap3-console-image-overo.tar.bz2 ~/Work/bitbake/rootfs.tar.bz2
 
 # Card size in bytes /255 /63 /512 to rounded down to get cylinders
-IMG=rootfs.tar.bz2
+IMG=sakoman-gnome-image.tar.bz2
+UIMAGE=uImage-pm-3.0-r102-omap3-multi.bin
 SD=/dev/sdb
-DIR=~/Work/bitbake/
+DIR=~/gumstix/baseKernel/
 
 echo Loading ${DIR}${IMG} onto $SD
 
@@ -56,7 +57,7 @@ mount -t ext3 ${SD}2 /media/rootfs
 echo 'Copying boot files and rootfs'
 cp ${DIR}MLO /media/boot/MLO
 cp ${DIR}u-boot.bin /media/boot/u-boot.bin
-cp ${DIR}uImage /media/boot/uImage
+cp $DIR$UIMAGE /media/boot/uImage
 tar xaf $DIR$IMG -C /media/rootfs
 sync
 
