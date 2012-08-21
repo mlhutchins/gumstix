@@ -1,7 +1,12 @@
-# Repopulate a formatted rootfs 
+# Repopulate a rootfs
 
 IMG=sakoman-gnome-image.tar.bz2
 DIR=~/gumstix/baseKernel/
+SD=/media/rootfs/
+
+echo Erasing content on $SD
+
+rm -fr ${SD}*
 
 echo Loading ${DIR}${IMG} onto rootfs
 
