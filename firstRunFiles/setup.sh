@@ -7,10 +7,11 @@ echo 'Creating sferix account'
 adduser sferix
 usermod -s /bin/bash -G sferix sferix
 usermod -a -G audio sferix
-#echo 'Changing Sferix Password:'
-#passwd sferix
-echo 'sferix ALL=(ALL) ALL' >> /etc/sudoers
-chmod 440 /etc/sudoers
+touch sferix_sudo
+echo 'sferix ALL=(ALL) ALL' >> sferix_sudo
+chmod 0440 sferix_sudo
+cp sferix_sudo /etc/sudoers.d/
+rm sferix_sudo
 
 # Allow anyone to access sound
 chmod -R a+rwX /dev/snd

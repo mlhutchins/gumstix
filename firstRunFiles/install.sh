@@ -1,7 +1,9 @@
-#Update packages necessary for toga
+# Install necessary system packages
 
 # Comment dhclient out if setting up via SSH
-#dhclient
+echo 'Starting DHCP'
+dhclient
+
 echo 'Installing packages...'
 opkg update
 opkg install gcc
@@ -20,3 +22,4 @@ opkg install openssh
 echo 'Setting clock'
 /usr/bin/ntpdate -s -u bigben.cac.washington.edu
 
+echo 'Run setup.sh'
