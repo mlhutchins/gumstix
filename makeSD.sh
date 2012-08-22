@@ -15,6 +15,7 @@ IMG=sakoman-gnome-image.tar.bz2
 UIMAGE=uImage-pm-3.0-r102-omap3-multi.bin
 SD=/dev/sdb
 DIR=~/gumstix/baseKernel/
+MOD=modules-3.0-r102-omap3-multi.tgz
 
 echo Loading ${DIR}${IMG} onto $SD
 
@@ -59,6 +60,12 @@ cp ${DIR}MLO /media/boot/MLO
 cp ${DIR}u-boot.bin /media/boot/u-boot.bin
 cp $DIR$UIMAGE /media/boot/uImage
 tar xaf $DIR$IMG -C /media/rootfs
+tar xzvf $DIR$MOD
+rm -rf /media/rootfs/modules
+rm -rf /media/rootfs/firmware
+cp -r ${DIR}lib/* /media/rootfs/lib/
+rm -rf ${DIR}lib
+
 sync
 
 # Adjust Network and opkg parameters

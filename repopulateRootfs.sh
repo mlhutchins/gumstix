@@ -3,6 +3,7 @@
 IMG=sakoman-gnome-image.tar.bz2
 DIR=~/gumstix/baseKernel/
 SD=/media/rootfs/
+MOD=modules-3.0-r102-omap3-multi.tgz
 
 echo Erasing content on $SD
 
@@ -13,6 +14,11 @@ echo Loading ${DIR}${IMG} onto rootfs
 # Copy over boot files and expand OS
 echo 'Copying rootfs'
 tar xaf $DIR$IMG -C /media/rootfs
+tar xzvf $DIR$MOD
+rm -rf /media/rootfs/modules
+rm -rf /media/rootfs/firmware
+cp -r ${DIR}lib/* /media/rootfs/lib/
+rm -rf ${DIR}lib
 sync
 
 # Adjust Network and opkg parameters
