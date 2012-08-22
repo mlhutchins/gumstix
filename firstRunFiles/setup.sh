@@ -33,6 +33,8 @@ cp ${DIR}.vimrc /home/sferix/
 cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
+*cp ${DIR}NetworkManager.conf /etc/NetworkManager/
+rm /etc/rc*.d/*NetworkManager
 
 # Install toga
 echo 'Installing Toga'
