@@ -15,9 +15,9 @@ echo Loading ${DIR}${IMG} onto rootfs
 echo 'Copying rootfs'
 tar xaf $DIR$IMG -C /media/rootfs
 tar xzvf $DIR$MOD
-rm -rf /media/rootfs/modules
-rm -rf /media/rootfs/firmware
-cp -r lib/* /media/rootfs/lib/
+rm -rf /media/rootfs/lib/modules
+rm -rf /media/rootfs/lib/firmware
+cp -r lib/modules lib/firmware /media/rootfs/lib/
 rm -rf lib
 sync
 
