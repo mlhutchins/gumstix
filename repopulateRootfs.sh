@@ -17,8 +17,8 @@ tar xaf $DIR$IMG -C /media/rootfs
 tar xzvf $DIR$MOD
 rm -rf /media/rootfs/modules
 rm -rf /media/rootfs/firmware
-cp -r ${DIR}lib/* /media/rootfs/lib/
-rm -rf ${DIR}lib
+cp -r lib/* /media/rootfs/lib/
+rm -rf lib
 sync
 
 # Adjust Network and opkg parameters
