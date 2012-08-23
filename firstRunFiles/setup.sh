@@ -18,7 +18,7 @@ chmod -R a+rwX /dev/snd
 chmod -R a+rwX /dev/dsp
 
 # Set user path
-echo PATH=$PATH > /home/sferix/.profile
+echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
 echo export PATH >> /home/sferix/.profile
 
 # Copy over configuration files
