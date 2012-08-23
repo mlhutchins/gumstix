@@ -35,6 +35,7 @@ cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
 *cp ${DIR}NetworkManager.conf /etc/NetworkManager/
 rm /etc/rc*.d/*NetworkManager
+cp ${DIR}dropbear /etc/init.d/
 
 # Install toga
 echo 'Installing Toga'
