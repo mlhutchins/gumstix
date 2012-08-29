@@ -8,6 +8,7 @@ echo 'Installing packages...'
 opkg update
 opkg install gcc
 opkg install libstdc++6
+opkg install python-pyserial
 opkg install gd
 opkg install ntp
 opkg install ntp-bin

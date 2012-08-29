@@ -42,7 +42,7 @@ echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 mkdir /home/sferix/public_html
 chown -R sferix /home/sferix
-
+cp ${DIR}readTSIP.py /home/sferix/bin
 
 echo 'Reboot recommended'
 
