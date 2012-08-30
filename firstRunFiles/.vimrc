@@ -1,3 +1,4 @@
+syntax on
 set backspace=indent,eol,start
 set history=50
 set hlsearch
