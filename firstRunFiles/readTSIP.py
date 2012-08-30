@@ -28,9 +28,9 @@ gpsStatus={'00':'Locked',
 		'03':'PDOP is too high',
 		'08':'No usable satallites',
 		'09':'1 Satellite',
-		'0A':'2 Satellites',
-		'0B':'3 Satellites',
-		'0C':'The chosen sat in unusable',
+		'0a':'2 Satellites',
+		'0b':'3 Satellites',
+		'0c':'The chosen sat in unusable',
 		'10':'TRAIM rejected the fix'}
 	# Status 00 is originally 'Doing fixes' in TSIP documentation
 
@@ -153,8 +153,6 @@ while True:
 				if ((alarms[12-i]=='1') and (alertList[i] not in 'Not used')):
 					alerts.append(alertList[i])
 
-			# Select GPS Status
-
 			# Convert from hex to floating point decimal
 			temp=struct.unpack('!f',hexTemp.decode('hex'))
 			lat=struct.unpack('!d',hexLat.decode('hex'))
@@ -172,7 +170,7 @@ while True:
 				', Longitude: ' + str(long)
 	
 			# Print GPS Status
-			print 'GPS Status: ' + gpsStatus[fix]
+			print 'GPS Status: ' + gpsStatus[fix] + ' (' + fix + ')'
 
 			# Print alerts, if any
 			if (len(alerts)>0):
