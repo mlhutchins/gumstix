@@ -17,10 +17,10 @@ ser = serial.Serial(
 
 # List of possible alerts
 alerts=[]
-alertList=['Not used','Antenna Open','Antenna Shorted','Not tracking satellites',
-		'Not used','Survey In Progress','No Stored Position','Leap Second Pending',
-		'In Test Mode','Position is Questionable','Not Used','Almanac not complete',
-		'PPS was not generated','Not used','Not used','Not used','Not used']
+alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites',
+		'Not used','Survey in progress','No stored position','Leap second pending',
+		'In test mode','Position is questionable','Not used','Almanac not complete',
+		'PPS was not generated']
 
 # Continuously monitor serial line
 while True:
@@ -66,6 +66,10 @@ while True:
 	
 			# Print results
 			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds
+
+		elif (len(primTiming) == 32):
+			print 'GPS Time Not Set'
+
 		else:
 			print 'Primary Packet Length: ' + str(len(primTiming))
 		
@@ -83,17 +87,17 @@ while True:
 			hexTemp=secTiming[32*2:35*2+2]
 			hexLat=secTiming[36*2:43*2+2]
 			hexLong=secTiming[44*2:51*2+2]
-			alarms=bin(int(secTiming[10*2:11*2+2],16))[2:]
-			
+			alarms=bin(int(secTiming[10*2:11*2+2],16))[2:]		
+	
 			# Pad alert bytes
-			if (len(alarms)<16):
-				padding='0'*(16-len(alarms))
-				alarms=padding+alarms
-				
+			if (len(alarms)<13):
+				padding='0'*(12-len(alarms))
+				alarms=padding+alarms+'0'
+			
 			# Select current alerts
 			alerts[:]=[];
-			for i in range(0,16):
-				if alarms[15-i]=='1':
+			for i in range(0,13):
+				if ((alarms[12-i]=='1') & (alertList[i] not in 'Not used')):
 					alerts.append(alertList[i])
 
 			# Convert from hex to floating point decimal
@@ -114,7 +118,7 @@ while True:
 	
 			# Print alerts, if any
 			if (len(alerts)>0):
-				print 'Current Alerts: ' + alerts
+				print 'Current Alerts: ' + str(alerts)[1:-1]
 		else:
 			# Offset time if messages are being read partway through
 			time.sleep(0.17)
