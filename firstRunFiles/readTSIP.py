@@ -66,7 +66,8 @@ while True:
 	
 			# Print results
 			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds
-			
+		else:
+			print 'Primary Packet Length: ' + str(len(primTiming))
 		
 #		print secTiming		
 
@@ -117,4 +118,4 @@ while True:
 		else:
 			# Offset time if messages are being read partway through
 			time.sleep(0.17)
-			print 'Packet Length: ' + str(len(secTiming))
+			print 'Secondary Packet Length: ' + str(len(secTiming))
