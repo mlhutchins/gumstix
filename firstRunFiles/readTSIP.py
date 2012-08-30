@@ -150,7 +150,7 @@ while True:
 			# Select current alerts
 			alerts[:]=[];
 			for i in range(0,13):
-				if ((alarms[12-i]=='1') and (alertList[i] not in 'Not used')):
+				if ((alarms[i]=='1') and (alertList[i] not in 'Not used')):
 					alerts.append(alertList[i])
 
 			# Convert from hex to floating point decimal
