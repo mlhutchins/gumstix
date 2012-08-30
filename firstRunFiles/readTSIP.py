@@ -22,6 +22,30 @@ alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites'
 		'In test mode','Position is questionable','Not used','Almanac not complete',
 		'PPS was not generated']
 
+# GPS Status
+gpsStatus={'00':'Locked',
+		'01':'Dont have GPS time',
+		'03':'PDOP is too high',
+		'08':'No usable satallites',
+		'09':'1 Satellite',
+		'0A':'2 Satellites',
+		'0B':'3 Satellites',
+		'0C':'The chosen sat in unusable',
+		'10':'TRAIM rejected the fix'}
+	# Status 00 is originally 'Doing fixes' in TSIP documentation
+
+# Timing Flag
+timingFlags={'00':'GPS Time',
+		'01':'UTC Time',
+		'10':'GPS PPS',
+		'11':'UTC PPS',
+		'20':'Time is set',
+		'21':'Time is not set',
+		'30':'Have UTC info',
+		'31':'No UTC info',
+		'40':'Time from GPS',
+		'41':'Time from user'}
+
 # Initialize variables
 removeIndex=[]
 
@@ -87,8 +111,21 @@ while True:
 			if (len(month)==1):
 				month='0'+month	
 	
+			# Extract timing flag
+			timing=bin(int(primTiming[9*2-2:9*2],16))[2:]
+
+			# Pad timing flag
+			if (len(timing)<8):
+				padding='0'*(8-len(timing))
+				timing=padding+timing
+
+			# Get timing info from flags
+			timingInfo=''
+			for i in range(0,5):
+				timingInfo = timingInfo + ', '+ timingFlags[str(i)+str(timing[7-i])]
+			
 			# Print results
-			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds
+			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds + ', ' + timingInfo[2:]
 
 		else:
 			print 'Primary Packet Length: ' + str(len(primTiming))
@@ -116,6 +153,8 @@ while True:
 				if ((alarms[12-i]=='1') and (alertList[i] not in 'Not used')):
 					alerts.append(alertList[i])
 
+			# Select GPS Status
+
 			# Convert from hex to floating point decimal
 			temp=struct.unpack('!f',hexTemp.decode('hex'))
 			lat=struct.unpack('!d',hexLat.decode('hex'))
@@ -132,6 +171,9 @@ while True:
 				', Latitude: ' + str(lat) + \
 				', Longitude: ' + str(long)
 	
+			# Print GPS Status
+			print 'GPS Status: ' + gpsStatus[fix]
+
 			# Print alerts, if any
 			if (len(alerts)>0):
 				print 'Current Alerts: ' + str(alerts)[1:-1]
