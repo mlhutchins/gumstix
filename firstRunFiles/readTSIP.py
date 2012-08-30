@@ -22,6 +22,9 @@ alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites'
 		'In test mode','Position is questionable','Not used','Almanac not complete',
 		'PPS was not generated']
 
+# Initialize variables
+removeIndex=[]
+
 # Continuously monitor serial line
 while True:
 	
@@ -31,8 +34,28 @@ while True:
 	if (len(line) > 0 ):
 #		print line.encode('hex')
 
+		# Remove '1010' code from hexline (10 bytes are prefixed by another 10 escape byte)
+                hexline=line.encode('hex')
+	
+		# Find '1010' bytes
+		index=0
+		a=0
+		removeIndex[:]=[]
+		while a>-1:
+			a=hexline.find('1010',index)
+			if a>-1:
+				removeIndex.append(a)
+			index=a+1
+		removeIndex.reverse()		
+
+		# Remove extranous '10' byte
+		if len(removeIndex)>0:
+			for i in range(0,len(removeIndex)):
+				if removeIndex[i]%2==0:
+					hexline=hexline[:removeIndex[i]] + hexline[removeIndex[i]+2:]
+
+
 		# Extract primary and secondary timing messages
-		hexline=line.encode('hex')
 		start=hexline.find('108fab')
 		end=hexline.find('1003')
 		primTiming=hexline[start+6:end]
@@ -42,15 +65,15 @@ while True:
 
 #		print primTiming
 		# Check for proper length of primary timing message
-		if (len(primTiming) == 34):
+		if (len(primTiming) == 32):
 		
 			# Select and convert date (Hex string to decimal to string)
-			seconds=str(int(primTiming[10*2:10*2+2],16))
-			minutes=str(int(primTiming[11*2:11*2+2],16))
-			hours=str(int(primTiming[12*2:12*2+2],16))
-			day=str(int(primTiming[13*2:13*2+2],16))
-			month=str(int(primTiming[14*2:14*2+2],16))
-			year=str(int(primTiming[15*2:],16))
+			seconds=str(int(primTiming[10*2-2:10*2],16))
+			minutes=str(int(primTiming[11*2-2:11*2],16))
+			hours=str(int(primTiming[12*2-2:12*2],16))
+			day=str(int(primTiming[13*2-2:13*2],16))
+			month=str(int(primTiming[14*2-2:14*2],16))
+			year=str(int(primTiming[15*2-2:],16))
 
 			# Pad digits
 			if (len(seconds)==1):
@@ -67,27 +90,20 @@ while True:
 			# Print results
 			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds
 
-		elif (len(primTiming) == 32):
-			print 'GPS Time Not Set'
-
 		else:
 			print 'Primary Packet Length: ' + str(len(primTiming))
 		
 #		print secTiming		
-
+#		print len(secTiming)
 		# Check for proper length of secondary timing message
-		if (len(secTiming) > 130):
+		if (len(secTiming) == 134):
 			
-			# Pad message if reserved byte gets dropped
-			if (len(secTiming)==134):
-				secTiming=secTiming[:24*2] + '00' + secTiming[24*2:]	
-
 			# Extract parameters of interest
 			fix=secTiming[12*2-2:12*2]
-			hexTemp=secTiming[32*2:35*2+2]
-			hexLat=secTiming[36*2:43*2+2]
-			hexLong=secTiming[44*2:51*2+2]
-			alarms=bin(int(secTiming[10*2:11*2+2],16))[2:]		
+			hexTemp=secTiming[32*2-2:35*2]
+			hexLat=secTiming[36*2-2:43*2]
+			hexLong=secTiming[44*2-2:51*2]
+			alarms=bin(int(secTiming[10*2-2:11*2],16))[2:]		
 	
 			# Pad alert bytes
 			if (len(alarms)<13):
@@ -97,7 +113,7 @@ while True:
 			# Select current alerts
 			alerts[:]=[];
 			for i in range(0,13):
-				if ((alarms[12-i]=='1') & (alertList[i] not in 'Not used')):
+				if ((alarms[12-i]=='1') and (alertList[i] not in 'Not used')):
 					alerts.append(alertList[i])
 
 			# Convert from hex to floating point decimal
