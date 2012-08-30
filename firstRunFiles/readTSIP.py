@@ -53,7 +53,7 @@ removeIndex=[]
 while True:
 	
 	# Wait 0.25 seconds and check messages in serial buffer
-	time.sleep(0.25)
+	time.sleep(1)
 	line=ser.read(ser.inWaiting())
 	if (len(line) > 0 ):
 #		print line.encode('hex')
