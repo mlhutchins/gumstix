@@ -17,11 +17,11 @@ ser = serial.Serial(
 
 messages={'01':'101e4b1003'.decode('hex'),
 		'02':'101e0e1003'.decode('hex'),
-		'03':'10bbff07ff04ff3f74d474408000004140000040c00000ff01ffffffffff1003',
-		'04':'108e4e041003',
-		'05':'108ea2001003',
-		'06':'103c1003',	
-		'50':'108e261003',
+		'03':'10bbff07ff04ff3f74d474408000004140000040c00000ff01ffffffffff1003'.decode('hex'),
+		'04':'108e4e041003'.decode('hex'),
+		'05':'108ea2001003'.decode('hex'),
+		'06':'',	
+		'50':'108e261003'.decode('hex'),
 		'99':'Exit'
 }
 
@@ -46,7 +46,7 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
-		ser.write(raw)
+		ser.write(raw.decode('hex'))
 	else:
 		ser.write(messages[result])
 

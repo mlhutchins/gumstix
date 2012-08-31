@@ -93,9 +93,6 @@ while True:
 	if (len(line) > 0 ):
 #		print 'Main hexline: ' + line.encode('hex')
 
-		# Request number of satellites
-#		ser.write('10271003')
-
 		# Read serial buffer
 
                 hexline=line.encode('hex')
@@ -104,6 +101,9 @@ while True:
 		start=hexline.find('108fab')
 		end=hexline.find('1003')
 		primTiming=hexline[start+6:end]
+
+#		print 'Start: ' + str(start) + ', End: ' + str(end)
+			
 		start=hexline.find('108fac')
 		end=hexline.find('1003',start)
 		secTiming=hexline[start+6:end]
@@ -165,6 +165,7 @@ while True:
 			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds + ', ' + timingInfo[2:]
 
 		else:
+			time.sleep(0.07)
 			print 'Primary Packet Length: ' + str(len(primTiming))
 		
 #		print secTiming		
@@ -214,7 +215,7 @@ while True:
 				print 'Current Alerts: ' + str(alerts)[1:-1]
 		else:
 			# Offset time if messages are being read partway through
-			time.sleep(0.17)
+			time.sleep(0.07)
 			print 'Secondary Packet Length: ' + str(len(secTiming))
 		
 		# Report the number of satellites locked
