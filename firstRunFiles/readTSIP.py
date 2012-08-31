@@ -46,8 +46,34 @@ timingFlags={'00':'GPS Time',
 		'40':'Time from GPS',
 		'41':'Time from user'}
 
+
+# Function to remove '1010' code (TSIP '10' is an escape byte)
+
+def removeEscape(message):
+	removeIndex=[]
+        # Find '1010' bytes
+	index=0
+	a=0
+	removeIndex[:]=[]
+	while a>-1:
+		a=message.find('1010',index)
+		if a>-1:
+			removeIndex.append(a)
+		index=a+1
+	removeIndex.reverse()
+	
+	# Remove extranous '10' byte
+	if len(removeIndex)>0:
+		for i in range(0,len(removeIndex)):
+			if removeIndex[i]%2==0:
+				message=message[:removeIndex[i]] + message[removeIndex[i]+2:]
+	return
+
+
 # Initialize variables
 removeIndex=[]
+
+
 
 # Continuously monitor serial line
 while True:
@@ -58,27 +84,13 @@ while True:
 	if (len(line) > 0 ):
 #		print line.encode('hex')
 
-		# Remove '1010' code from hexline (10 bytes are prefixed by another 10 escape byte)
+		# Request number of satellites
+		ser.write('10271003')
+
+		# Read serial buffer
+
                 hexline=line.encode('hex')
 	
-		# Find '1010' bytes
-		index=0
-		a=0
-		removeIndex[:]=[]
-		while a>-1:
-			a=hexline.find('1010',index)
-			if a>-1:
-				removeIndex.append(a)
-			index=a+1
-		removeIndex.reverse()		
-
-		# Remove extranous '10' byte
-		if len(removeIndex)>0:
-			for i in range(0,len(removeIndex)):
-				if removeIndex[i]%2==0:
-					hexline=hexline[:removeIndex[i]] + hexline[removeIndex[i]+2:]
-
-
 		# Extract primary and secondary timing messages
 		start=hexline.find('108fab')
 		end=hexline.find('1003')
@@ -86,6 +98,16 @@ while True:
 		start=hexline.find('108fac')
 		end=hexline.find('1003',start)
 		secTiming=hexline[start+6:end]
+		start=hexline.find('1047')
+		end=hexline.find('1003',start)
+		satLine=hexline[start+4:end]
+
+
+		# Remove escapes
+		removeEscape(primTiming)
+		removeEscape(secTiming)
+		if (len(satLine)>0):
+			removeEscape(satLine)
 
 #		print primTiming
 		# Check for proper length of primary timing message
@@ -179,3 +201,8 @@ while True:
 			# Offset time if messages are being read partway through
 			time.sleep(0.17)
 			print 'Secondary Packet Length: ' + str(len(secTiming))
+		
+		# Report the number of satellites locked
+		if (len(satLine)>2):
+			sat=satLine[0:2]
+			print 'Satellites: ' + str(int(sat,16))
