@@ -83,6 +83,7 @@ while True:
 	
 	if (timeIndex==0.5):
 		ser.write('10271003'.decode('hex'))
+		ser.write('10241003'.decode('hex'))
 		line=[]
 	elif (timeIndex==1.0):
 		line=ser.read(ser.inWaiting())
@@ -94,33 +95,38 @@ while True:
 #		print 'Main hexline: ' + line.encode('hex')
 
 		# Read serial buffer
-
                 hexline=line.encode('hex')
 	
 		# Extract primary and secondary timing messages
 		start=hexline.find('108fab')
 		end=hexline.find('1003')
 		primTiming=hexline[start+6:end]
-
-#		print 'Start: ' + str(start) + ', End: ' + str(end)
-			
 		start=hexline.find('108fac')
 		end=hexline.find('1003',start)
 		secTiming=hexline[start+6:end]
 		start=hexline.find('1047')
+
+                # Remove escapes
+                primTiming = removeEscape(primTiming)
+                secTiming = removeEscape(secTiming)
+
+		# Extract satallite tracking information
 		end=hexline.find('1003',start)
 		if (start>-1):
 			satLine=hexline[start+4:end]
 			satLine=removeEscape(satLine)
 		else:
 			satLine=[]
-
-
+		
+		start=hexline.find('106d')
+		end=hexline.find('1003',start)
+		if (start>-1):
+			trackline=hexline[start+4:end]
+			trackline=removeEscape(trackline)
+		
 		# Remove escapes
 		primTiming = removeEscape(primTiming)
 		secTiming = removeEscape(secTiming)
-		if (len(satLine)>0):
-			satLine = removeEscape(satLine)
 
 #		print 'Primary Timing: ' + primTiming
 #		print 'Secondary Timing: ' + secTiming
@@ -168,8 +174,6 @@ while True:
 			time.sleep(0.07)
 			print 'Primary Packet Length: ' + str(len(primTiming))
 		
-#		print secTiming		
-#		print len(secTiming)
 		# Check for proper length of secondary timing message
 		if (len(secTiming) == 134):
 			
@@ -208,7 +212,7 @@ while True:
 				', Longitude: ' + str(long)
 	
 			# Print GPS Status
-			print 'GPS Status: ' + gpsStatus[fix] + ' (' + fix + ')'
+			print 'GPS Status: ' + gpsStatus[fix] # + ' (' + fix + ')'
 
 			# Print alerts, if any
 			if (len(alerts)>0):
@@ -218,7 +222,18 @@ while True:
 			time.sleep(0.07)
 			print 'Secondary Packet Length: ' + str(len(secTiming))
 		
-		# Report the number of satellites locked
+		# Report the number of satellites locked and available
+
+		if (len(trackline)>2):
+			track = str(int(trackline[0],16))
+		else:
+			track = -1
+
 		if (len(satLine)>2):
-			sat=satLine[0:2]
-			print 'Satellites: ' + str(int(sat,16))
+			sat = str(int(satLine[0:2],16))
+		else:
+			sat = -1
+
+		print 'Satellites tracked: ' + track + ' (of ' + sat + ' available)'
+
+		
