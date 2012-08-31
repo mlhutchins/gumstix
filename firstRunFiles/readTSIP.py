@@ -79,10 +79,10 @@ while True:
 	
 	# Wait 0.25 seconds and check messages in serial buffer
 	time.sleep(0.25)
-	timeIndex=timeIndex+0.5
+	timeIndex=timeIndex+0.25
 	
 	if (timeIndex==0.5):
-		ser.write('10271003')
+		ser.write('10271003'.decode('hex'))
 		line=[]
 	elif (timeIndex==1.0):
 		line=ser.read(ser.inWaiting())
@@ -91,7 +91,7 @@ while True:
 		line=[]	
 
 	if (len(line) > 0 ):
-		print 'Main hexline: ' + line.encode('hex')
+#		print 'Main hexline: ' + line.encode('hex')
 
 		# Request number of satellites
 #		ser.write('10271003')
