@@ -48,7 +48,6 @@ timingFlags={'00':'GPS Time',
 
 
 # Function to remove '1010' code (TSIP '10' is an escape byte)
-
 def removeEscape(message):
 	removeIndex=[]
         # Find '1010' bytes
@@ -67,25 +66,35 @@ def removeEscape(message):
 		for i in range(0,len(removeIndex)):
 			if removeIndex[i]%2==0:
 				message=message[:removeIndex[i]] + message[removeIndex[i]+2:]
-	return
+	return message
 
 
 # Initialize variables
 removeIndex=[]
-
+timeIndex=0
 
 
 # Continuously monitor serial line
 while True:
 	
 	# Wait 0.25 seconds and check messages in serial buffer
-	time.sleep(1)
-	line=ser.read(ser.inWaiting())
+	time.sleep(0.25)
+	timeIndex=timeIndex+0.5
+	
+	if (timeIndex==0.5):
+		ser.write('10271003')
+		line=[]
+	elif (timeIndex==1.0):
+		line=ser.read(ser.inWaiting())
+		timeIndex=0
+	else:
+		line=[]	
+
 	if (len(line) > 0 ):
-#		print line.encode('hex')
+		print 'Main hexline: ' + line.encode('hex')
 
 		# Request number of satellites
-		ser.write('10271003')
+#		ser.write('10271003')
 
 		# Read serial buffer
 
@@ -100,16 +109,22 @@ while True:
 		secTiming=hexline[start+6:end]
 		start=hexline.find('1047')
 		end=hexline.find('1003',start)
-		satLine=hexline[start+4:end]
+		if (start>-1):
+			satLine=hexline[start+4:end]
+			satLine=removeEscape(satLine)
+		else:
+			satLine=[]
 
 
 		# Remove escapes
-		removeEscape(primTiming)
-		removeEscape(secTiming)
+		primTiming = removeEscape(primTiming)
+		secTiming = removeEscape(secTiming)
 		if (len(satLine)>0):
-			removeEscape(satLine)
+			satLine = removeEscape(satLine)
 
-#		print primTiming
+#		print 'Primary Timing: ' + primTiming
+#		print 'Secondary Timing: ' + secTiming
+
 		# Check for proper length of primary timing message
 		if (len(primTiming) == 32):
 		
