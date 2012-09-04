@@ -44,5 +44,15 @@ mkdir /home/sferix/public_html
 chown -R sferix /home/sferix
 cp ${DIR}readTSIP.py /home/sferix/bin
 
+# Create gps.log file
+touch /home/sferix/public_html/gps.log
+chown sferix /home/sferix/public_html/gps.log
+
+# Add flash4 into authorized keys
+mkdir /home/sferix/.ssh
+cp ${DIR}authorized_keys /home/sferix/.ssh
+chown sferix /home/sferix/.ssh
+chown sferix /home/sferix/.ssh/authorized_keys
+
 echo 'Reboot recommended'
 

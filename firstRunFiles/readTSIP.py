@@ -5,7 +5,6 @@ import serial
 import time
 import binhex
 import struct
-import os
 
 # Configure serial connection
 ser = serial.Serial(
