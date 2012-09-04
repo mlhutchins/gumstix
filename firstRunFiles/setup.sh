@@ -7,6 +7,7 @@ echo 'Creating sferix account'
 adduser sferix
 usermod -s /bin/bash -G sferix sferix
 usermod -a -G audio sferix
+usermod -a -G dialout sferix
 touch sferix_sudo
 echo 'sferix ALL=(ALL) ALL' >> sferix_sudo
 chmod 0440 sferix_sudo
@@ -16,9 +17,6 @@ rm sferix_sudo
 # Allow anyone to access sound
 chmod -R a+rwX /dev/snd
 chmod -R a+rwX /dev/dsp
-
-# Allow access to GPS Serial
-sudo chmod -R a+rwX /dev/ttyO0
 
 # Set user path
 echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
@@ -39,6 +37,7 @@ cp ${DIR}ntp.conf /etc/
 *cp ${DIR}NetworkManager.conf /etc/NetworkManager/
 rm /etc/rc*.d/*NetworkManager
 cp ${DIR}dropbear /etc/init.d/
+cp ${DIR}httpd.conf /etc/apache2/
 
 # Install toga
 echo 'Installing Toga'
@@ -61,7 +60,7 @@ chown sferix /home/sferix/.ssh/authorized_keys
 mv /usr/share/apache2/htdocs /usr/share/apache2/htdocs.orig
 ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
-cp ${DIR}index.html /home/sferix/public_html
+cp ${DIR}index.html /home/sferix/public_html/
 
 echo 'Reboot recommended'
 

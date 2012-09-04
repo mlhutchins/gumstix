@@ -242,12 +242,12 @@ while True:
 		if (len(trackline)>2):
 			track = str(int(trackline[0],16))
 		else:
-			track = -1
+			track = '-1'
 
 		if (len(satLine)>2):
 			sat = str(int(satLine[0:2],16))
 		else:
-			sat = -1
+			sat = '-1'
 
 		statement3 = 'Satellites tracked: ' + track + ' (of ' + sat + ' available)'
 

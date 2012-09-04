@@ -19,6 +19,7 @@
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT 
 -A INPUT -p udp -m state --state NEW -m udp --dport 5555 -j ACCEPT 
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 7777 -j ACCEPT 
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 6234 -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-host-prohibited 
 COMMIT
 # Completed on Thu Aug  2 21:14:33 2012
