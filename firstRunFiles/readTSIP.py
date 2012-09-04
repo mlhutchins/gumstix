@@ -5,6 +5,7 @@ import serial
 import time
 import binhex
 import struct
+import os
 
 # Configure serial connection
 ser = serial.Serial(
@@ -14,6 +15,10 @@ ser = serial.Serial(
 	stopbits=serial.STOPBITS_ONE,
 	bytesize=serial.EIGHTBITS
 )
+
+# Open log file
+filepath='/home/sferix/public_html/gps.log'
+fid = open(filepath,'a')
 
 # List of possible alerts
 alerts=[]
@@ -80,6 +85,8 @@ while True:
 	# Wait 0.25 seconds and check messages in serial buffer
 	time.sleep(0.25)
 	timeIndex=timeIndex+0.25
+
+	currentTime = time.localtime()
 	
 	if (timeIndex==0.5):
 		ser.write('10271003'.decode('hex'))
@@ -168,11 +175,12 @@ while True:
 				timingInfo = timingInfo + ', '+ timingFlags[str(i)+str(timing[7-i])]
 			
 			# Print results
-			print year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds + ', ' + timingInfo[2:]
+			
+			statement1 = year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds + ', ' + timingInfo[2:]
 
 		else:
 			time.sleep(0.07)
-			print 'Primary Packet Length: ' + str(len(primTiming))
+			statement1 = 'Primary Packet Length: ' + str(len(primTiming))
 		
 		# Check for proper length of secondary timing message
 		if (len(secTiming) == 134):
@@ -207,21 +215,25 @@ while True:
 			long = long[0] * 180 / pi
 
 			# Print results
-			print 'Temperature: ' + str(temp) + \
+			statement2a = 'Temperature: ' + str(temp) + \
 				', Latitude: ' + str(lat) + \
 				', Longitude: ' + str(long)
 	
 			# Print GPS Status
-			print 'GPS Status: ' + gpsStatus[fix] # + ' (' + fix + ')'
+			statement2b = 'GPS Status: ' + gpsStatus[fix] # + ' (' + fix + ')'
 
 			# Print alerts, if any
 			if (len(alerts)>0):
-				print 'Current Alerts: ' + str(alerts)[1:-1]
+				statement2c = 'Current Alerts: ' + str(alerts)[1:-1]
+			else:
+				statement2c=''
 		else:
 			# Offset time if messages are being read partway through
 			time.sleep(0.07)
-			print 'Secondary Packet Length: ' + str(len(secTiming))
-		
+			statement2a = 'Secondary Packet Length: ' + str(len(secTiming))
+			statement2b = ''
+			statement2c = ''
+
 		# Report the number of satellites locked and available
 
 		if (len(trackline)>2):
@@ -234,6 +246,42 @@ while True:
 		else:
 			sat = -1
 
-		print 'Satellites tracked: ' + track + ' (of ' + sat + ' available)'
+		statement3 = 'Satellites tracked: ' + track + ' (of ' + sat + ' available)'
 
-		
+		# Print out generated messages
+
+		print statement1
+		print statement2a
+		if len(statement2b) > 0 :
+			print statement2b
+		if len(statement2c) > 0 :
+			print statement2c
+		print statement3
+
+		# Save GPS messages every 10 minutes to log file
+
+		if currentTime.tm_min%1 == 0 :
+			fid.write(statement1 + '\n')
+			fid.write(statement2a + '\n')
+		        if len(statement2b) > 0 :
+                        	fid.write(statement2b + '\n')  
+                	if len(statement2c) > 0 :
+                        	fid.write(statement2c + '\n')  
+                	fid.write(statement3 + '\n')  	
+
+			if len(open(filepath).readlines()) > 5000 :
+				fid.close()
+				fid = open(filepath,'r')
+				log_text = fid.readlines()
+				fid.close()		
+				
+				del log_text[0:100]
+				
+				fid = open(filepath,'w')
+				fid.writelines(log_text)
+				
+				fid.close()
+				
+				fid = open(filepath,'a')
+
+
