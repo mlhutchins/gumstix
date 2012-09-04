@@ -14,6 +14,8 @@ opkg install ntp
 opkg install ntp-bin
 opkg install vim
 opkg install iptables
+opkg install openvpn
+opkg install vpnc
 # opkg install gpsd
 
 # opkg remove dropbear --force-removal
