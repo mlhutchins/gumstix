@@ -6,6 +6,10 @@ import time
 import binhex
 import struct
 
+# Enable to print messages to console
+
+print_to_console=False
+
 # Configure serial connection
 ser = serial.Serial(
 	port='/dev/ttyO0',
@@ -249,17 +253,18 @@ while True:
 
 		# Print out generated messages
 
-		print statement1
-		print statement2a
-		if len(statement2b) > 0 :
-			print statement2b
-		if len(statement2c) > 0 :
-			print statement2c
-		print statement3
+		if print_to_console:
+			print statement1
+			print statement2a
+			if len(statement2b) > 0 :
+				print statement2b
+			if len(statement2c) > 0 :
+				print statement2c
+			print statement3
 
 		# Save GPS messages every 10 minutes to log file
 
-		if currentTime.tm_min%1 == 0 :
+		if currentTime.tm_min%10 == 0 :
 			fid.write(statement1 + '\n')
 			fid.write(statement2a + '\n')
 		        if len(statement2b) > 0 :
@@ -268,13 +273,13 @@ while True:
                         	fid.write(statement2c + '\n')  
                 	fid.write(statement3 + '\n')  	
 
-			if len(open(filepath).readlines()) > 5000 :
+			if len(open(filepath).readlines()) > 10000 :
 				fid.close()
 				fid = open(filepath,'r')
 				log_text = fid.readlines()
 				fid.close()		
 				
-				del log_text[0:100]
+				del log_text[0:500]
 				
 				fid = open(filepath,'w')
 				fid.writelines(log_text)

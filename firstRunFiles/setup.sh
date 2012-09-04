@@ -17,6 +17,9 @@ rm sferix_sudo
 chmod -R a+rwX /dev/snd
 chmod -R a+rwX /dev/dsp
 
+# Allow access to GPS Serial
+sudo chmod -R a+rwX /dev/ttyO0
+
 # Set user path
 echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
 echo export PATH >> /home/sferix/.profile
