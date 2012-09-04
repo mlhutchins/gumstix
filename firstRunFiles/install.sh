@@ -16,6 +16,7 @@ opkg install vim
 opkg install iptables
 opkg install openvpn
 opkg install vpnc
+opkg install apache2
 # opkg install gpsd
 
 # opkg remove dropbear --force-removal

@@ -57,5 +57,11 @@ cp ${DIR}authorized_keys /home/sferix/.ssh
 chown sferix /home/sferix/.ssh
 chown sferix /home/sferix/.ssh/authorized_keys
 
+# Link public_html to htdocs
+mv /usr/share/apache2/htdocs /usr/share/apache2/htdocs.orig
+ln -s /home/sferix/public_html /usr/share/apache2/htdocs
+chmod a+rx /home/sferix/public_html
+cp ${DIR}index.html /home/sferix/public_html
+
 echo 'Reboot recommended'
 
