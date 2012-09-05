@@ -8,7 +8,7 @@ import struct
 
 # Enable to print messages to console
 
-print_to_console=False
+print_to_console=True
 
 # Configure serial connection
 ser = serial.Serial(
@@ -133,7 +133,8 @@ while True:
 		if (start>-1):
 			trackline=hexline[start+4:end]
 			trackline=removeEscape(trackline)
-		
+		else:
+			trackline=[]	
 		# Remove escapes
 		primTiming = removeEscape(primTiming)
 		secTiming = removeEscape(secTiming)
@@ -264,7 +265,7 @@ while True:
 
 		# Save GPS messages every 10 minutes to log file
 
-		if currentTime.tm_min%10 == 0 :
+		if currentTime.tm_min%10 == 0 and currentTime.tm_sec < 10:
 			fid.write(statement1 + '\n')
 			fid.write(statement2a + '\n')
 		        if len(statement2b) > 0 :
@@ -273,7 +274,7 @@ while True:
                         	fid.write(statement2c + '\n')  
                 	fid.write(statement3 + '\n')  	
 
-			if len(open(filepath).readlines()) > 10000 :
+			if len(open(filepath).readlines()) > 30000 :
 				fid.close()
 				fid = open(filepath,'r')
 				log_text = fid.readlines()
