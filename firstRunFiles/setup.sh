@@ -38,6 +38,7 @@ cp ${DIR}ntp.conf /etc/
 rm /etc/rc*.d/*NetworkManager
 cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
+cp ${DIR}gpsd /etc/default/
 
 # Install toga
 echo 'Installing Toga'
