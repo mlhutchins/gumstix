@@ -12,6 +12,7 @@ opkg install python-pyserial
 opkg install gd
 opkg install ntp
 opkg install ntp-bin
+opkg install gps-utils
 opkg install vim
 opkg install iptables
 opkg install openvpn
