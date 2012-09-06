@@ -76,6 +76,15 @@ def removeEscape(message):
 				message=message[:removeIndex[i]] + message[removeIndex[i]+2:]
 	return message
 
+def extractMessage(idpacket,hexline)
+	start=hexline.find(idpacket)
+	if start>-1:
+        	end=hexline.find('1003')
+                packet = hexline[start+len(idpacket):end]
+                packet = removeEscape(packet)
+	else:
+		packet=-1
+	return packet
 
 # Initialize variables
 removeIndex=[]
@@ -107,37 +116,11 @@ while True:
 		# Read serial buffer
                 hexline=line.encode('hex')
 	
-		# Extract primary and secondary timing messages
-		start=hexline.find('108fab')
-		end=hexline.find('1003')
-		primTiming=hexline[start+6:end]
-		start=hexline.find('108fac')
-		end=hexline.find('1003',start)
-		secTiming=hexline[start+6:end]
-		start=hexline.find('1047')
-
-                # Remove escapes
-                primTiming = removeEscape(primTiming)
-                secTiming = removeEscape(secTiming)
-
-		# Extract satallite tracking information
-		end=hexline.find('1003',start)
-		if (start>-1):
-			satLine=hexline[start+4:end]
-			satLine=removeEscape(satLine)
-		else:
-			satLine=[]
-		
-		start=hexline.find('106d')
-		end=hexline.find('1003',start)
-		if (start>-1):
-			trackline=hexline[start+4:end]
-			trackline=removeEscape(trackline)
-		else:
-			trackline=[]	
-		# Remove escapes
-		primTiming = removeEscape(primTiming)
-		secTiming = removeEscape(secTiming)
+		# Extract TSIP messagess
+		primTiming = extractMessage('108fab',hexline)
+		secTiming = extractMessage('108fac',hexline)
+		satLine = extractMessage('1047',hexline)
+		trackline = extractMessage('106d',hexline)		
 
 #		print 'Primary Timing: ' + primTiming
 #		print 'Secondary Timing: ' + secTiming
