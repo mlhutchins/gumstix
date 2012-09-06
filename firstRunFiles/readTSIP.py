@@ -5,11 +5,22 @@ import serial
 import time
 import binhex
 import struct
+import os
+import sys
 
 # Enable to print messages to console
 
 print_to_console=True
 
+if print_to_console:
+	gpsd = os.popen('ps ax | grep gpsd').read()
+	if '/dev/ttyO0' in gpsd:
+		gpsd_check = raw_input('Terminate GPSD? (y/n)')
+		if 'y' in gpsd_check:
+			os.system('killall gpsd')
+		else:
+			sys.exit('Serial port in use by gpsd')
+		
 # Configure serial connection
 ser = serial.Serial(
 	port='/dev/ttyO0',
@@ -76,14 +87,14 @@ def removeEscape(message):
 				message=message[:removeIndex[i]] + message[removeIndex[i]+2:]
 	return message
 
-def extractMessage(idpacket,hexline)
+def extractMessage(idpacket,hexline):
 	start=hexline.find(idpacket)
 	if start>-1:
-        	end=hexline.find('1003')
+        	end=hexline.find('1003',start)
                 packet = hexline[start+len(idpacket):end]
                 packet = removeEscape(packet)
 	else:
-		packet=-1
+		packet = str(-1)
 	return packet
 
 # Initialize variables

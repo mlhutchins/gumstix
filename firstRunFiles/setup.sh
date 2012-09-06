@@ -45,7 +45,13 @@ echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 mkdir /home/sferix/public_html
 chown -R sferix /home/sferix
-cp ${DIR}readTSIP.py /home/sferix/bin
+
+# Install TSIP programs
+mkdir /home/sferix/gps
+cp ${DIR}readTSIP.py /home/sferix/gps
+cp ${DIR}sendTSIP.py /home/sferix/gps
+cp ${DIR}startGPSD.py /home/sferix/gps
+chown -R sferix /home/sferix/gps
 
 # Create gps.log file
 touch /home/sferix/public_html/gps.log

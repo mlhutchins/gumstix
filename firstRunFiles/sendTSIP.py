@@ -5,6 +5,17 @@ import serial
 import time
 import binhex
 import struct
+import os
+import sys
+
+
+gpsd = os.popen('ps ax | grep gpsd').read()
+if '/dev/ttyO0' in gpsd:
+        gpsd_check = raw_input('Terminate GPSD? (y/n)')
+        if 'y' in gpsd_check:
+                os.system('killall gpsd')
+        else:   
+                sys.exit('Serial port in use by gpsd')
 
 # Configure serial connection
 ser = serial.Serial(
