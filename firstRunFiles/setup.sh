@@ -53,6 +53,9 @@ cp ${DIR}sendTSIP.py /home/sferix/gps
 cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
 
+# Install sferix crontab
+crontab -u sferix ${DIR}crontab_install
+
 # Create gps.log file
 touch /home/sferix/public_html/gps.log
 chown sferix /home/sferix/public_html/gps.log
