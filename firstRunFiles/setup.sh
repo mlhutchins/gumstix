@@ -72,5 +72,12 @@ ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
 cp ${DIR}index.html /home/sferix/public_html/
 
+# Install Preamp scripts
+echo "Installing preamp scripts"
+mkdir /home/sferix/preamp
+cp ${DIR}/preamp* /home/sferix/preamp/
+chown sferix /home/sferix/preamp
+chown sferix /home/sferix/preamp/*
+
 echo 'Reboot recommended'
 
