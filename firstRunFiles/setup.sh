@@ -34,7 +34,7 @@ cp ${DIR}.vimrc /home/sferix/
 cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
-*cp ${DIR}NetworkManager.conf /etc/NetworkManager/
+cp ${DIR}NetworkManager.conf /etc/NetworkManager/
 rm /etc/rc*.d/*NetworkManager
 cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
@@ -45,6 +45,10 @@ echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 mkdir /home/sferix/public_html
 chown -R sferix /home/sferix
+mkdir /home/sferix/sferics
+touch /home/sferix/sferics/sferics.log
+chown -R sferix /home/sferix/sferics
+chown sferix /home/sferix/sferics/sferics.log
 
 # Install TSIP programs
 mkdir /home/sferix/gps
@@ -75,7 +79,7 @@ cp ${DIR}index.html /home/sferix/public_html/
 # Install Preamp scripts
 echo "Installing preamp scripts"
 mkdir /home/sferix/preamp
-cp ${DIR}/preamp* /home/sferix/preamp/
+cp ${DIR}preamp* /home/sferix/preamp/
 chown sferix /home/sferix/preamp
 chown sferix /home/sferix/preamp/*
 
