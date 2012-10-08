@@ -92,6 +92,7 @@ echo 'Unmounting microSD card'
 umount /media/boot
 umount /media/rootfs
 
-rmdir /media/{boot,rootfs}
+rmdir /media/boot
+rmdir /media/rootfs
 
 echo 'Load into Gumstix and run /home/root/firstRun.sh'
