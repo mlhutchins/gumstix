@@ -12,7 +12,7 @@
 
 # Card size in bytes /255 /63 /512 to rounded down to get cylinders
 IMG=sakoman-gnome-image.tar.bz2
-UIMAGE=uImage-pm-3.0-r102-omap3-multi.bin
+UIMAGE=uImage-3.0-r102-omap3-multi.bin
 SD=/dev/sdb
 DIR=~/gumstix/baseKernel/
 MOD=modules-3.0-r102-omap3-multi.tgz
