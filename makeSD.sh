@@ -50,9 +50,11 @@ echo 'Formatting and Mounting'
 mkfs.vfat -F 32 ${SD}1 -n boot
 mke2fs -j -L rootfs ${SD}2
 sleep 2
-rm -r /media/{boot,rootfs}
+rm -r /media/boot
+rm -r /media/rootfs
 sleep 1
-mkdir /media/{boot,rootfs}
+mkdir /media/boot
+mkdir /media/rootfs
 sleep 1
 mount -t vfat ${SD}1 /media/boot
 mount -t ext3 ${SD}2 /media/rootfs
