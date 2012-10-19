@@ -10,7 +10,7 @@ import sys
 
 # Enable to print messages to console
 
-print_to_console=True
+print_to_console=False
 
 if print_to_console:
 	gpsd = os.popen('ps ax | grep gpsd').read()
@@ -32,7 +32,6 @@ ser = serial.Serial(
 
 # Open log file
 filepath='/home/sferix/public_html/gps.log'
-fid = open(filepath,'a')
 
 # List of possible alerts
 alerts=[]
@@ -260,6 +259,7 @@ while True:
 		# Save GPS messages every 10 minutes to log file
 
 		if currentTime.tm_min%10 == 0 and currentTime.tm_sec < 10:
+			fid = open(filepath,'a')
 			fid.write(statement1 + '\n')
 			fid.write(statement2a + '\n')
 		        if len(statement2b) > 0 :
@@ -283,4 +283,4 @@ while True:
 				
 				fid = open(filepath,'a')
 
-
+			fid.close()
