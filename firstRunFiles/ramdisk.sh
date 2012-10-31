@@ -7,7 +7,7 @@ start(){
 	echo -n "Creating sferics and public_html on ramdisk."
 	mkdir /media/ram/sferics
 	mkdir /media/ram/public_html
-	cp -r /home/sferics/public_html_static/* /media/ram/public_html/
+	cp -r /home/sferix/public_html_static/* /media/ram/public_html/
 	echo -n "Folders created."
 }
 stop(){
