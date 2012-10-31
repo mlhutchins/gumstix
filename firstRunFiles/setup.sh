@@ -76,12 +76,14 @@ ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
 cp ${DIR}index.html /home/sferix/public_html/
 
-# Install Preamp scripts
+# Install preamp startup scripts
 echo "Installing preamp scripts"
 mkdir /home/sferix/preamp
 cp ${DIR}preamp* /home/sferix/preamp/
 chown sferix /home/sferix/preamp
 chown sferix /home/sferix/preamp/*
+cp ${DIR}preamp.sh /etc/init.d/
+ln -s /etc/init.d/preamp.sh /etc/rc5.d/S90preamp
 
 echo 'Reboot recommended'
 
