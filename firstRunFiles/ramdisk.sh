@@ -8,6 +8,7 @@ start(){
 	mkdir /media/ram/sferics
 	mkdir /media/ram/public_html
 	cp -r /home/sferix/public_html_static/* /media/ram/public_html/
+	chown -R sferix /media/ram/*
 	echo -n "Folders created."
 }
 stop(){
