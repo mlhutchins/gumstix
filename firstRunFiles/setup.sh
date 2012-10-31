@@ -47,6 +47,7 @@ tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 # Setup toga folders on ramdisk
 mkdir /media/ram/public_html
 mkdir /media/ram/sferics
+mkdir /home/sferix/public_html_static
 ln -s /media/ram/sferics /home/sferix/sferics
 ln -s /media/ram/public_html /home/sferix/public_html
 touch /home/sferix/sferics/sferics.log
@@ -55,6 +56,10 @@ chown -R sferix /home/sferix/sferics
 chown -R sferix /media/ram/sferics
 chwon -R sferix /media/ram/public_html
 chown sferix /home/sferix/sferics/sferics.log
+
+# Create folders at startup
+cp ${DIR}ramdisk.sh /etc/init.d/
+ln -s /etc/init.d/ramdisk.sh /etc/rc5.d/S90ramdisk
 
 # Install TSIP programs
 mkdir /home/sferix/gps
@@ -80,7 +85,7 @@ chown sferix /home/sferix/.ssh/authorized_keys
 mv /usr/share/apache2/htdocs /usr/share/apache2/htdocs.orig
 ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
-cp ${DIR}index.html /home/sferix/public_html/
+cp ${DIR}index.html /home/sferix/public_html_static/
 
 # Install preamp startup scripts
 echo "Installing preamp scripts"
