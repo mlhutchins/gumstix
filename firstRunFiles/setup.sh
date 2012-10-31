@@ -43,11 +43,17 @@ cp ${DIR}gpsd /etc/default/
 # Install toga
 echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
-mkdir /home/sferix/public_html
-chown -R sferix /home/sferix
-mkdir /home/sferix/sferics
+
+# Setup toga folders on ramdisk
+mkdir /media/ram/public_html
+mkdir /media/ram/sferics
+ln -s /media/ram/sferics /home/sferix/sferics
+ln -s /media/ram/public_html /home/sferix/public_html
 touch /home/sferix/sferics/sferics.log
+chown -R sferix /home/sferix
 chown -R sferix /home/sferix/sferics
+chown -R sferix /media/ram/sferics
+chwon -R sferix /media/ram/public_html
 chown sferix /home/sferix/sferics/sferics.log
 
 # Install TSIP programs
