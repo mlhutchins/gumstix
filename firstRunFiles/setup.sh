@@ -54,7 +54,7 @@ touch /home/sferix/sferics/sferics.log
 chown -R sferix /home/sferix
 chown -R sferix /home/sferix/sferics
 chown -R sferix /media/ram/sferics
-chwon -R sferix /media/ram/public_html
+chown -R sferix /media/ram/public_html
 chown sferix /home/sferix/sferics/sferics.log
 
 # Create folders at startup
