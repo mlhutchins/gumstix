@@ -27,4 +27,7 @@ opkg install apache2
 echo 'Setting clock'
 /usr/bin/ntpdate -s -u bigben.cac.washington.edu
 
+echo 'System update'
+opkg upgrade
+
 echo 'Run setup.sh'
