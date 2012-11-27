@@ -17,6 +17,7 @@ rm sferix_sudo
 # Allow anyone to access sound
 chmod -R a+rwX /dev/snd
 chmod -R a+rwX /dev/dsp
+chown -R sferix snd
 
 # Set user path
 echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile

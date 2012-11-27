@@ -18,7 +18,8 @@ opkg install iptables
 opkg install openvpn
 opkg install vpnc
 opkg install apache2
-opkg install ssh-keygen
+opkg install openssh-keygen
+opkg install openssh-ssh
 #opkg install openssl
 #opkg install openssh
 # opkg install gpsd
