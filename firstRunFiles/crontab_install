@@ -3,6 +3,7 @@
 PATH=/usr/bin:/bin:/home/sferix/bin:/home/sferix
 
 # Ensure toga is running
+#0,5,10,15,20,25,30,35,40,45,50,55 * * * * ssh -p 7777 127.0.0.1 /home/sferix/bin/toga -s 100 -a 3 -j 1 -g -o -20.8 -A hw:0
 0,5,10,15,20,25,30,35,40,45,50,55 * * * * toga -s 100 -a 3 -j 1 -g -o -20.8 -A hw:0 &
 
 # Ensure gpsd is running without overwriting readTSIP or sendTSIP programs
