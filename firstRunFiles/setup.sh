@@ -14,11 +14,6 @@ chmod 0440 sferix_sudo
 cp sferix_sudo /etc/sudoers.d/
 rm sferix_sudo
 
-# Allow anyone to access sound
-chmod -R a+rwX /dev/snd
-chmod -R a+rwX /dev/dsp
-chown -R sferix snd
-
 # Set user path
 echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
 echo export PATH >> /home/sferix/.profile
@@ -61,6 +56,10 @@ chown sferix /home/sferix/sferics/sferics.log
 # Create folders at startup
 cp ${DIR}ramdisk.sh /etc/init.d/
 ln -s /etc/init.d/ramdisk.sh /etc/rc5.d/S90ramdisk
+
+# Set /dev/snd ownership at startup
+cp ${DIR}setsnd.sh /etc/init.d/
+ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
 # Install TSIP programs
 mkdir /home/sferix/gps
