@@ -35,6 +35,7 @@ rm /etc/rc*.d/*NetworkManager
 cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
+cp ${DIR}networkConfig.sh /home/sferix/
 
 # Install toga
 echo 'Installing Toga'

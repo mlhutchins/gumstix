@@ -5,11 +5,11 @@ iface lo inet loopback
 
 
 auto eth0
-iface eth0 inet dhcp
-# iface eth0 inet static
-# address 128.208.22.30
-# gateway 128.208.22.100
-# netmask 255.255.255.0
+#iface eth0 inet dhcp
+iface eth0 inet static
+address 192.168.10.2
+gateway 192.188.10.100
+netmask 255.255.255.0
 pre-up iptables-restore < /etc/iptables.rules
 #post-up /usr/bin/ntpdate -b bigben.cac.washington.edu
 pre-up /etc/init.d/ntpd start
