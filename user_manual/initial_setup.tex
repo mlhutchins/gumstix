@@ -1,0 +1,68 @@
+\documentclass[12pt, letterpaper, onecolumn, oneside]{article}
+\usepackage{amsmath, graphicx, natbib}
+\linespread{1} %Line spacing
+\oddsidemargin -0.5in %Creates 1 inch margins all around
+\textwidth 7.5in
+\topmargin 0in
+\headheight 0in
+\headsep 0in
+\textheight 9in
+\begin{document}
+
+\begin{centering}
+\large{WWLLN Service Unit v4 Initial Setup}
+
+\end{centering}
+
+\subsection*{Method 1: SSH Setup}
+The SSH setup method requires:
+\begin{itemize}
+\item{Ethernet cable}
+\item{SSH capable computer}
+\end{itemize}
+
+\begin{enumerate}
+\item{Connect SU to a host computer directly with an ethernet cable}
+\item{Set host computer ethernet network settings to:
+\begin{verbatim}
+address:	192.168.10.1
+gateway:	192.168.10.100
+netmask:	255.255.255.0
+\end{verbatim}}
+\item{SSH into the SU from host computer:
+\begin{verbatim}
+ssh -p 7777 sferix@192.168.10.2
+password: [	]
+\end{verbatim}}
+\item{Set desired static ip configuration in file $\sim$/networkSetup.sh}
+\item{\begin{verbatim}
+sudo ./networkSetup.sh
+\end{verbatim}}
+\item{Switch SU to main network ethernet within 1 minute of running networkSetup.sh}
+\item{Test connection by SSH'ing into SU with new IP address}
+\item{
+\begin{enumerate}
+\item{If successful: set new IP setting in /etc/network/interfaces}
+\item{If unsuccessful: power cycle SU and check settings starting with step 3}
+\end{enumerate}}
+\item{Reset SU and confirm new settings}
+\end{enumerate}
+
+\subsection*{Method 2: Workstation Setup}
+The Workstation setup method requires:
+\begin{itemize}
+\item{HDMI Monitor and cable}
+\item{{\bf Powered} USB Hub}
+\item{USB Keyboard}
+\item{USB Mouse}
+\end{itemize}
+
+\begin{enumerate}
+\item{Connect an HDMI display, keyboard and mouse}
+\item{Set network information through GUI}
+\end{enumerate}
+
+%\bibliography{/users/michael/documents/ess/research/library}
+%\bibliographystyle{/users/michael/documents/ess/research/agu}
+
+\end{document}
