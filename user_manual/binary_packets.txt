@@ -1,0 +1,19 @@
+Set 5 degree elevation
+
+10 3C 00 10 03 
+10 BB 00 07 02 04 FF 3D B2 B8 C2 40 80 00 00 41 40 00 00 40 C0 00 00 FF 01 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 10 03 
+10 8E 15 00 00 10 03
+
+Report signal levels by default
+
+10 8E 20 00 10 03 
+10 8E 21 00 10 03 
+10 8E 23 00 10 03 
+10 35 12 02 00 20 10 03 
+
+Save configuration
+10 8E 26 10 03 
+
+Set qualifier >=3 satellites
+10 8E 4E 04 10 03 
+
