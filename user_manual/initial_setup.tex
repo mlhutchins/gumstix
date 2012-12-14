@@ -10,7 +10,7 @@
 \begin{document}
 
 \begin{centering}
-\large{WWLLN Service Unit v4 Initial Setup}
+\section{WWLLN Service Unit v4 Initial Setup}
 
 \end{centering}
 
@@ -61,6 +61,40 @@ The Workstation setup method requires:
 \item{Connect an HDMI display, keyboard and mouse}
 \item{Set network information through GUI}
 \end{enumerate}
+
+\begin{centering}
+\section*{Website Setup}
+\end{centering}
+
+\subsection*{Starting apache2}
+
+To get apache2 running only one change needs to be made in the /etc/apache2/httpd.conf file.
+
+\begin{verbatim}
+Line 96:	#ServerName www.example.com:80
+\end{verbatim}
+
+Needs to be uncommented and changed to the hostname of the computer, e.g.:
+
+\begin{verbatim}
+Line96:	ServerName bobholz-3.ess.washington.edu:80
+\end{verbatim}
+
+Then either the SU needs to be restarted or httpd and apach2 need to be restarted:
+
+\begin{verbatim}
+sudo httpd -k restart
+sudo /etc/init.d/apache2 restart
+\end{verbatim}
+
+\subsection*{Setting up the website}
+
+All changes to the website need to be made in the /home/sferix/public\_html\_static folder, this folder is copied to /home/sferix/public\_html during start up. Changes to public\_html are not saves as the folder is located in system RAM due to SD card read/write limitations. A restart in not necessary if the public\_html\_static contents are copied to public\_html.
+
+
+
+
+
 
 %\bibliography{/users/michael/documents/ess/research/library}
 %\bibliographystyle{/users/michael/documents/ess/research/agu}
