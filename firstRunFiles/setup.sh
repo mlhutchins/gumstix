@@ -36,6 +36,7 @@ cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkConfig.sh /home/sferix/
+cp ${DIR}asound.state /etc/
 
 # Install toga
 echo 'Installing Toga'
