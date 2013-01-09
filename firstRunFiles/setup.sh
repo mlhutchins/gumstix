@@ -37,6 +37,8 @@ cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkConfig.sh /home/sferix/
 cp ${DIR}asound.state /etc/
+cp ${DIR}asound.state /home/sferix/asound.state.default
+cp ${DIR}asound.txt /home/sferix/asound.txt
 
 # Install toga
 echo 'Installing Toga'

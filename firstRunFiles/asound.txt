@@ -1,0 +1,15 @@
+Audio card gain settings are controlled by alsamixer which can be accessed through the command:
+
+alsamixer
+
+With the settings adjusted with q,z (left channel up/down) and e,c (right channel up/down) and different channels selected with the arrow keys.
+
+For the Gumstix in particular the important channels are:
+
+Analog - analog soundcard gain
+TX1 Digital - digital soundcard gain
+
+In general it is best to make adjustments to just the Analog channel and leave the TX1 channel set to 0 dB gain.
+
+The sound settings are stored in /etc/asound.state and can be reset to default by copying over the asound.state.defaults file located in the sferix home directory.
+
