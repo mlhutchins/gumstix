@@ -17,6 +17,7 @@ opkg install vim
 opkg install iptables
 opkg install openvpn
 opkg install vpnc
+opkg remove apache2
 opkg install apache2
 opkg install openssh-keygen
 opkg install openssh-ssh
