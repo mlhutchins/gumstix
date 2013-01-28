@@ -80,11 +80,10 @@ Needs to be uncommented and changed to the hostname of the computer, e.g.:
 Line96:	ServerName bobholz-3.ess.washington.edu:80
 \end{verbatim}
 
-Then either the SU needs to be restarted or httpd and apach2 need to be restarted:
+Then httpd needs to be restarted:
 
 \begin{verbatim}
 sudo httpd -k restart
-sudo /etc/init.d/apache2 restart
 \end{verbatim}
 
 \subsection*{Setting up the website}
