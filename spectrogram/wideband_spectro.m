@@ -4,7 +4,8 @@
     Fs= fread(fid,1,'double');  %precise sampling rate
     offsetSamples = fread(fid,1,'double');
     %y=fread(fid,[1,inf],'float');
-    y=fread(fid,[1,inf],'short'); y = y/32768;
+    y=fread(fid,[1,inf],'short');
+    y = y/32768;
     fclose(fid);
 
     %optional HP filter
@@ -44,7 +45,7 @@
     S = (abs(ythat/Nw).^2)/varw; % Power spectrum, normalized by Hanning window power
     S = S(1:Nw/2,:);  % Remove negative harmonics
     SdB = 10*log10(S); % Switch to decibel scale
-    Mw = 0:(Nw/2 - 1);  % Get harmonics
+    Mw = 0:(Nw/2 - 1);  % Get harmonic
     fw = Fs*Mw/Nw; % Convert harmonics to frequencies
     tw = (1:nwin)*0.5*Nw/Fs; % Time of each window
 
