@@ -14,4 +14,3 @@ y = numpy.fromfile(fid, dtype=numpy.dtype('<i2'))
 y = y[10:]
 print len(y)
 print y[:10]
-
