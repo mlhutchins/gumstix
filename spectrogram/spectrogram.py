@@ -3,9 +3,13 @@ import numpy
 import matplotlib
 from pylab import *
 
+## Set Parameters
+
+timeStep = 5
+
 ## Read in Wideband VLF Data
 
-fileName = '../../../MATLAB/WBTest.dat'
+fileName = 'WB20130219000000.dat'
 
 fid = open(fileName, 'rb')
 
@@ -61,10 +65,6 @@ tw = numpy.arange(1,nwin) * 0.5 * Nw/Fs
 
 ## Plotting
 
-def find_nearest(array,value):
-    idx = (numpy.abs(array-value)).argmin()
-    return array[idx]
-
 def find_closest(A, target):
     #A must be sorted
     idx = A.searchsorted(target)
@@ -74,25 +74,35 @@ def find_closest(A, target):
     idx -= target - left < right - target
     return idx
 
-tStart = 5
-tEnd = 10
-time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
-imshow(SdB, origin='lower')
-colorbar()
-xlabel('Time (s)')
-ylabel('Frequency (kHz)')
+imageSteps = numpy.arange(0,int(floor(tw[-1])),timeStep)
 
-tStep = tw[1] - tw[0]
-tStep = int(numpy.round(1 / tStep))
-tickXloc = numpy.arange(0,len(tw),step=tStep)
-tickXlabel = numpy.round(tw[tickXloc])
-fStep = fw[1] - fw[0]
-fStep = fStep/1000
-fStep = int(numpy.round(1 / fStep))
-tickYloc = numpy.arange(0,len(fw),step=2*fStep)
-tickYlabel = numpy.round(fw[tickYloc]/1000)
-xticks(tickXloc,tickXlabel)
-yticks(tickYloc,tickYlabel)
-xlim(time[0], time[1])
-savefig('WBTest.png')
+figure(figsize=(10,10))
+figAspect = 4*timeStep/(fw[-1]/1000)
+
+for i in imageSteps:
+	tStart = i
+	tEnd = i + timeStep
+	time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
+	imshow(SdB, origin='lower')
+	if i == imageSteps[0]:
+		cbar = colorbar(orientation = 'horizontal')
+		cbar.set_label('Spectral Power (dB)')
+	xlabel('Time (s)')
+	ylabel('Frequency (kHz)')
+	tStep = tw[1] - tw[0]
+	tStep = int(numpy.round(1 / tStep))
+	tickXloc = numpy.arange(0,len(tw),step=tStep)
+	tickXlabel = numpy.round(tw[tickXloc])
+	fStep = fw[1] - fw[0]
+	fStep = fStep/1000
+	fStep = int(numpy.round(1 / fStep))
+	tickYloc = numpy.arange(0,len(fw),step=2*fStep)
+	tickYlabel = numpy.round(fw[tickYloc]/1000)
+	xticks(tickXloc,tickXlabel)
+	yticks(tickYloc,tickYlabel)
+	xlim(time[0], time[1])
+	axes().set_aspect(figAspect)
+	title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
+	saveName = fileName[:-6] + str(i) + '.png'
+	savefig(saveName)
 
