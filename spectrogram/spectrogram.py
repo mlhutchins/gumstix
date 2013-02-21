@@ -1,6 +1,6 @@
 import scipy
 import numpy
-import array
+import matplotlib
 
 ## Read in Wideband VLF Data
 
@@ -44,7 +44,7 @@ yw[:,0:nwin:2] = y[:nwinf*Nw].reshape(Nw,nwinf,order='F').copy()
 yw[:,1:(nwin-1):2] = y[(Nw/2):(nwinf-0.5)*Nw].reshape(Nw,nwinh,order='F').copy()
 
 # Taper the data
-yt = yw * numpy.tile(w,(nwin,1)).T.shape
+yt = yw * numpy.tile(w,(nwin,1)).T
 
 # DFT of the data
 ythat = numpy.zeros(yt.shape)
@@ -58,4 +58,4 @@ Mw = numpy.arange(0,Nw/2)
 fw = Fs * Mw / Nw
 tw = numpy.arange(1,nwin) * 0.5 * Nw/Fs
 
-
+## Plotting
