@@ -1,15 +1,28 @@
 import scipy
 import numpy
 import matplotlib
+import sys
 from pylab import *
 
 ## Set Parameters
+if len(sys.argv) == 1:
+	print 'Error: Specify WB.dat file'
+elif len(sys.argv) == 2:
+	timeStep = 15
+	whistler = False
+elif len(sys.argv) == 3:
+	timeStep = int(sys.argv[2])
+	whistler = False
+elif len(sys.argv) == 4:
+	timeStep = int(sys.argv[2])
+	whistler = 1 == int(sys.argv[3])
 
-timeStep = 5
+# Set to True for Whistler search mode
+#whistler = True
 
 ## Read in Wideband VLF Data
 
-fileName = 'WB20130219000000.dat'
+fileName = sys.argv[1]#'WB20130219000000.dat'
 
 fid = open(fileName, 'rb')
 
@@ -61,7 +74,7 @@ S = S[0:Nw/2,:]
 SdB = 10*numpy.log10(S)
 Mw = numpy.arange(0,Nw/2)
 fw = Fs * Mw / Nw
-tw = numpy.arange(1,nwin) * 0.5 * Nw/Fs
+tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
 
 ## Plotting
 
@@ -76,17 +89,26 @@ def find_closest(A, target):
 
 imageSteps = numpy.arange(0,int(floor(tw[-1])),timeStep)
 
-figure(figsize=(10,10))
-figAspect = 4*timeStep/(fw[-1]/1000)
-
+if whistler:
+	freqMax = 13.
+	gs = matplotlib.gridspec.GridSpec(5,1,height_ratios=[5,.5,1,.5,1])
+else:
+	freqMax = (fw[-1]/1000)
+figAspect = 4*timeStep/freqMax
+figAspect = figAspect * (freqMax/24)
 for i in imageSteps:
+	fig = figure(figsize=(7.5,7.5))
 	tStart = i
 	tEnd = i + timeStep
 	time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
-	imshow(SdB, origin='lower')
-	if i == imageSteps[0]:
-		cbar = colorbar(orientation = 'horizontal')
-		cbar.set_label('Spectral Power (dB)')
+	if whistler:
+		ax1 = fig.add_subplot(gs[0])
+		imshow(SdB, origin='lower',vmin = -40, vmax = -15)
+	else:
+                ax1 = fig.add_subplot(1,1,1)
+		imshow(SdB, origin='lower')
+	cbar = colorbar(orientation = 'horizontal')
+	cbar.set_label('Spectral Power (dB)')
 	xlabel('Time (s)')
 	ylabel('Frequency (kHz)')
 	tStep = tw[1] - tw[0]
@@ -101,8 +123,24 @@ for i in imageSteps:
 	xticks(tickXloc,tickXlabel)
 	yticks(tickYloc,tickYlabel)
 	xlim(time[0], time[1])
-	axes().set_aspect(figAspect)
+	ylim(0,find_closest(fw,freqMax*1000))
+	ax1.set_aspect('auto')
 	title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
 	saveName = fileName[:-6] + str(i) + '.png'
+	if whistler:
+		subplot(gs[2])
+		freq = [3.5, 7.]
+		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+		plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+		xlim(tStart, tEnd)
+                title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+
+                subplot(gs[4])
+                freq = [4., 5.]
+                freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+                plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+                xlim(tStart, tEnd)
+		title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+	
 	savefig(saveName)
 
