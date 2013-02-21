@@ -1,5 +1,5 @@
 %read in the wideband VLF data file
-    fid=fopen('WB20120515175200.dat');
+    fid=fopen('WBTest.dat');
     unixTime = fread(fid,1,'int');  %seconds since 1 Jan 1970
     Fs= fread(fid,1,'double');  %precise sampling rate
     offsetSamples = fread(fid,1,'double');
