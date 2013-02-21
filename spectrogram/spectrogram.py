@@ -2,27 +2,21 @@ import scipy
 import numpy
 import matplotlib
 import sys
+import argparse
 from pylab import *
 
-## Set Parameters
-if len(sys.argv) == 1:
-	print 'Error: Specify WB.dat file'
-elif len(sys.argv) == 2:
-	timeStep = 15
-	whistler = False
-elif len(sys.argv) == 3:
-	timeStep = int(sys.argv[2])
-	whistler = False
-elif len(sys.argv) == 4:
-	timeStep = int(sys.argv[2])
-	whistler = 1 == int(sys.argv[3])
+parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
+parser.add_argument('fileName',metavar='filename',type=str,help = 'Name of wideband file')
+parser.add_argument('--time', default = 15, help = 'Time length of each plot (seconds)')
+parser.add_argument('--whistler',action = 'store_true', help = 'Switch to whistler search mode')
 
-# Set to True for Whistler search mode
-#whistler = True
+args = parser.parse_args()
+print args
+fileName = args.fileName
+whistler = args.whistler
+timeStep = int(args.time)
 
 ## Read in Wideband VLF Data
-
-fileName = sys.argv[1]#'WB20130219000000.dat'
 
 fid = open(fileName, 'rb')
 
