@@ -121,7 +121,7 @@ for i in imageSteps:
 	plt.ylim(0,find_closest(fw,freqMax*1000))
 	ax1.set_aspect('auto')
 	plt.title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
-	saveName = output + fileName[:-6] + str(i) + '.png'
+	saveName = output + fileName[:-6] + str(i).zfill(2) + '.png'
 	if whistler:
 		plt.subplot(gs[2])
 		freq = [3.5, 7.]
