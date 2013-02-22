@@ -12,7 +12,6 @@ parser.add_argument('--time', default = 15, help = 'Time length of each plot (se
 parser.add_argument('--whistler',action = 'store_true', help = 'Switch to whistler search mode')
 
 args = parser.parse_args()
-print args
 fileName = args.fileName
 whistler = args.whistler
 timeStep = int(args.time)

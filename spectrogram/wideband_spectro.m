@@ -21,7 +21,7 @@
 
     % Set power spectra control variables
     Nw = 2^10; % Hanning window length
-    Ny = length(yShort); % Ice sample length
+    Ny = length(y); % Ice sample length
     
     % Create Hanning window
     j = 1:Nw; % Set up an index vector to make hanning window
@@ -49,7 +49,7 @@
     fw = Fs*Mw/Nw; % Convert harmonics to frequencies
     tw = (1:nwin)*0.5*Nw/Fs; % Time of each window
 
-    % Plot the power spectra
+%% Plot the power spectra
 %     figure
 
     % Adds pads to data so pcolor is centered correctly
@@ -58,6 +58,8 @@
     fwpad = [fw fw(end)+dfw]-0.5*dfw;
     twpad = [tw tw(end)+dtw]-0.5*dtw;
     SdBpad = SdB([1:end end],[1:end end]);
+    
+    subplot(2,1,1)
     
     % Plot with pcolor
     pcolor(twpad,fwpad,SdBpad)
@@ -68,4 +70,21 @@
     shading flat
     c = colorbar;
     ylabel(c,'Spectral Power (dB)')
+    
+%% Whistler time for a specific file
+
+    subplot(2,1,2)
+    
+    % Plot with pcolor
+    pcolor(twpad,fwpad,SdBpad)
+    
+    % Format plot and add a colorbar
+    xlabel('Time')
+    ylabel('Frequency')
+    shading flat
+    c = colorbar;
+    ylabel(c,'Spectral Power (dB)')
+    xlim([16 19.5])
+    
+
     
