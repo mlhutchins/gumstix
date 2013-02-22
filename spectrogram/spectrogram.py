@@ -7,13 +7,15 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
 parser.add_argument('fileName',metavar='filename',type=str,help = 'Name of wideband file')
-parser.add_argument('--time', default = 15, help = 'Time length of each plot (seconds)')
-parser.add_argument('--whistler',action = 'store_true', help = 'Switch to whistler search mode')
+parser.add_argument('-t','--time', default = 15, help = 'Time length of each plot (seconds)')
+parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to whistler search mode')
+parser.add_argument('-o','--output', action='store',metavar='output',default='',type=str,help = 'Output directory')
 
 args = parser.parse_args()
 fileName = args.fileName
 whistler = args.whistler
 timeStep = int(args.time)
+output = args.output
 
 ## Read in Wideband VLF Data
 
@@ -119,7 +121,7 @@ for i in imageSteps:
 	plt.ylim(0,find_closest(fw,freqMax*1000))
 	ax1.set_aspect('auto')
 	plt.title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
-	saveName = fileName[:-6] + str(i) + '.png'
+	saveName = output + fileName[:-6] + str(i) + '.png'
 	if whistler:
 		plt.subplot(gs[2])
 		freq = [3.5, 7.]
