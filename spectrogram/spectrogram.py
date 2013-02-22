@@ -1,4 +1,3 @@
-import scipy
 import numpy
 import matplotlib
 matplotlib.use('Agg')
@@ -62,7 +61,7 @@ yt = yw * numpy.tile(w,(nwin,1)).T
 ythat = numpy.zeros(yt.shape)
 ythat = ythat + 0j
 for i in range(yt.shape[1]):
-	ythat[:,i] = scipy.fft(yt[:,i])
+	ythat[:,i] = numpy.fft.fft(yt[:,i])
 S = (numpy.absolute(ythat)**2)/varw
 S = S[0:Nw/2,:]
 SdB = 10*numpy.log10(S)
