@@ -1,9 +1,9 @@
 import scipy
 import numpy
 import matplotlib
+import matplotlib.pyplot as plt
 import sys
 import argparse
-from pylab import *
 
 parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
 parser.add_argument('fileName',metavar='filename',type=str,help = 'Name of wideband file')
@@ -81,7 +81,7 @@ def find_closest(A, target):
     idx -= target - left < right - target
     return idx
 
-imageSteps = numpy.arange(0,int(floor(tw[-1])),timeStep)
+imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
 
 if whistler:
 	freqMax = 13.
@@ -91,20 +91,20 @@ else:
 figAspect = 4*timeStep/freqMax
 figAspect = figAspect * (freqMax/24)
 for i in imageSteps:
-	fig = figure(figsize=(7.5,7.5))
+	fig = plt.figure(figsize=(7.5,7.5))
 	tStart = i
 	tEnd = i + timeStep
 	time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
 	if whistler:
 		ax1 = fig.add_subplot(gs[0])
-		imshow(SdB, origin='lower',vmin = -40, vmax = -15)
+		plt.imshow(SdB, origin='lower',vmin = -40, vmax = -15)
 	else:
-                ax1 = fig.add_subplot(1,1,1)
-		imshow(SdB, origin='lower')
-	cbar = colorbar(orientation = 'horizontal')
+		ax1 = fig.add_subplot(1,1,1)
+		plt.imshow(SdB, origin='lower')
+	cbar = plt.colorbar(orientation = 'horizontal')
 	cbar.set_label('Spectral Power (dB)')
-	xlabel('Time (s)')
-	ylabel('Frequency (kHz)')
+	plt.xlabel('Time (s)')
+	plt.ylabel('Frequency (kHz)')
 	tStep = tw[1] - tw[0]
 	tStep = int(numpy.round(1 / tStep))
 	tickXloc = numpy.arange(0,len(tw),step=tStep)
@@ -114,27 +114,27 @@ for i in imageSteps:
 	fStep = int(numpy.round(1 / fStep))
 	tickYloc = numpy.arange(0,len(fw),step=2*fStep)
 	tickYlabel = numpy.round(fw[tickYloc]/1000)
-	xticks(tickXloc,tickXlabel)
-	yticks(tickYloc,tickYlabel)
-	xlim(time[0], time[1])
-	ylim(0,find_closest(fw,freqMax*1000))
+	plt.xticks(tickXloc,tickXlabel)
+	plt.yticks(tickYloc,tickYlabel)
+	plt.xlim(time[0], time[1])
+	plt.ylim(0,find_closest(fw,freqMax*1000))
 	ax1.set_aspect('auto')
-	title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
+	plt.title(fileName + ', Fs: ' + str(int(Fs[0]/1000)) + ' kHz')
 	saveName = fileName[:-6] + str(i) + '.png'
 	if whistler:
-		subplot(gs[2])
+		plt.subplot(gs[2])
 		freq = [3.5, 7.]
 		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
-		plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
-		xlim(tStart, tEnd)
-                title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+		plt.xlim(tStart, tEnd)
+	        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
 
-                subplot(gs[4])
-                freq = [4., 5.]
-                freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
-                plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
-                xlim(tStart, tEnd)
-		title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+        	plt.subplot(gs[4])
+		freq = [4., 5.]
+       		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+    		plt.xlim(tStart, tEnd)
+		plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
 	
-	savefig(saveName)
+	plt.savefig(saveName)
 
