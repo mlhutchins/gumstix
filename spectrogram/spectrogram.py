@@ -110,7 +110,7 @@ for fileName in filenames:
 		weights = numpy.repeat(1.0, n) / n
 		band = numpy.convolve(band, weights)[n-1:-(n-1)]
 
-		high = numpy.zeros(len(band),1)
+		high = numpy.zeros((len(band),1))
 		highSum = high.copy()
 
 		for center in range(window, len(band) - window):
@@ -120,12 +120,12 @@ for fileName in filenames:
 			prePower = threshold * numpy.mean(bandWindow[:(window - innerWindow)])
 			postPower = threshold * numpy.mean(bandWindow[(window + innerWindow):])
 
-			if bandWindow(center) > prePower and bandWindow(center) > postPower:
+			if bandWindow[window] > prePower and bandWindow[window] > postPower:
 				high[center] = 1
 				highSum[center] = highSum[center - 1] + 1
 
-		timeStep = tw[1] - tw[0]
-		whistlerLength = numpy.round(0.05 / timeStep)
+		step = tw[1] - tw[0]
+		whistlerLength = numpy.round(0.05 / step)
 		whistlerTest = highSum > whistlerLength
 						
 ## Plotting
@@ -170,13 +170,13 @@ for fileName in filenames:
 		ax1.set_aspect('auto')
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
 		saveName = output + fileName[:-6] + str(i).zfill(2) + appendText + '.png'
-		if whistler and numpy.sum(int(whistlerTest[time[0]:time[1]])) > 1:
+		if whistler and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
 			plt.subplot(gs[2])
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
 
-		else:
+		elif not whistler:
 			plt.savefig(saveName,dpi = dpiSetting)
 	
