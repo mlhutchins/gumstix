@@ -12,7 +12,7 @@ parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to w
 parser.add_argument('-o','--output', action='store', metavar='output', default='',type=str,help = 'Output directory')
 parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figure width in inches (<4" not recommended)')
 parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
-
+parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -21,7 +21,7 @@ timeStep = int(args.time)
 output = args.output
 imageWidth = float(args.sizeX)
 imageHeight = float(args.sizeY)
-
+dpiSetting = float(args.dpi)
 
 ## Function definitions
 
@@ -149,5 +149,5 @@ for fileName in filenames:
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
 		
-		plt.savefig(saveName)
+		plt.savefig(saveName,dpi = dpiSetting)
 	
