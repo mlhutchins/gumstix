@@ -1,5 +1,8 @@
 %read in the wideband VLF data file
-    fid=fopen('WBTest.dat');
+%     fid=fopen('WB20120624191600.dat'); % Null Case
+    fid=fopen('WB20130219000000.dat'); % Whistler 1
+%     fid=fopen('WB20130219003000.dat'); % Whistler 2
+
     unixTime = fread(fid,1,'int');  %seconds since 1 Jan 1970
     Fs= fread(fid,1,'double');  %precise sampling rate
     offsetSamples = fread(fid,1,'double');
@@ -89,53 +92,65 @@
 
 %% Find Whistlers
 
-    band1 = sum(SdB(fw>4000 & fw<4500,:));
-    band2 = sum(SdB(fw>8000 & fw<13000,:));
-
-  plot(band1./mean(band1))
-hold on
-plot(band2./mean(band2),'r')  
-%%
+    band = sum(SdB(fw>4000 & fw<4500,:));
+    
     window = 100;
+    innerWindow = 10;
+    threshold = 4;
+    
     n=20;
     band = filter(ones(1,n)/n,1,band);
     band = band - min(band);
     band = band(20:end);
 
     high = false(length(band),1);
-    highSum = high;
-    for i = 1 : length(high)
+    highSum = high + 0;
+    for i = window + 1 : length(high) - window
         
-        if i <= window
-           cutoff = i-1;
-        else
-            cutoff = window;
-        end
+        bandWindow = band(i - window : i + window);
+        bandWindow = bandWindow - min(bandWindow);
         
-        if band(i) / median(band(i-cutoff:i-1)) > 1.1
+        prePower = threshold * mean(bandWindow(1 : window - innerWindow));
+        postPower = threshold * mean(bandWindow(window + innerWindow : end));
+        
+        if bandWindow(window) > prePower && bandWindow(window) > postPower
             high(i) = true;
         else
             high(i) = false;
         end
         
-        
-        if i>2 && high(i-2) & high(i)
-            highSum(i) = true;
+        if high(i)
+            highSum(i) = highSum(i-1) + high(i);
         end
-        
         
         
     end
 
+    timeStep = tw(2) - tw(1);
+    whistlerTest = highSum > round(0.05/timeStep);
     
     
-    subplot(2,1,1)
+    figure
+        subplot(3,1,1)
+    
+    % Plot with pcolor
+    pcolor(twpad,fwpad,SdBpad)
+    
+    % Format plot and add a colorbar
+    xlabel('Time')
+    ylabel('Frequency')
+    shading flat
+%     c = colorbar;
+%     ylabel(c,'Spectral Power (dB)')
+    
+    subplot(3,1,2)
     plot(band)
-    subplot(2,1,2)
-    plot(high)
-    hold on
-    plot(highSum,'r')
-    hold off
+    xlim([0 length(band)])
+    subplot(3,1,3)
+    plot(whistlerTest)
+
+    xlim([0 length(band)])
+
     
     
     
