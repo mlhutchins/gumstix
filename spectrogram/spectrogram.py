@@ -7,15 +7,21 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
 parser.add_argument('fileName', metavar='filename', type=str, nargs='+', help = 'Name (list) of wideband file(s)')
-parser.add_argument('-t','--time', default = 15, help = 'Time length of each plot (seconds)')
+parser.add_argument('-t','--time', metavar = 'time', default = 15, help = 'Time length of each plot (seconds)')
 parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to whistler search mode')
 parser.add_argument('-o','--output', action='store', metavar='output', default='',type=str,help = 'Output directory')
+parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figure width in inches (<4" not recommended)')
+parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
+
 
 args = parser.parse_args()
 filenames = args.fileName
 whistler = args.whistler
 timeStep = int(args.time)
 output = args.output
+imageWidth = float(args.sizeX)
+imageHeight = float(args.sizeY)
+
 
 ## Function definitions
 
@@ -90,13 +96,14 @@ for fileName in filenames:
 	
 	if whistler:
 		freqMax = 13.
-		gs = matplotlib.gridspec.GridSpec(5,1,height_ratios=[5,.5,1,.5,1])
+		gs = matplotlib.gridspec.GridSpec(3,1,height_ratios=[5,.5,1])
+#		gs = matplotlib.gridspec.GridSpec(5,1,height_ratios=[5,.5,1,.5,1])
 	else:
 		freqMax = (fw[-1]/1000)
 	figAspect = 4*timeStep/freqMax
 	figAspect = figAspect * (freqMax/24)
 	for i in imageSteps:
-		fig = plt.figure(figsize=(7.5,7.5))
+		fig = plt.figure(figsize=(imageWidth,imageHeight))
 		tStart = i
 		tEnd = i + timeStep
 		time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
@@ -127,14 +134,15 @@ for fileName in filenames:
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
 		saveName = output + fileName[:-6] + str(i).zfill(2) + '.png'
 		if whistler:
-			plt.subplot(gs[2])
-			freq = [3.5, 7.]
-			freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
-			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
-			plt.xlim(tStart, tEnd)
-		        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+#			plt.subplot(gs[2])
+#			freq = [3.5, 7.]
+#			freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+#			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+#			plt.xlim(tStart, tEnd)
+#		        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
 	
-	       	 	plt.subplot(gs[4])
+#	       	 	plt.subplot(gs[4])
+			plt.subplot(gs[2])
 			freq = [4., 5.]
 	       		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
