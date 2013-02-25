@@ -87,4 +87,57 @@
     xlim([16 19.5])
     
 
+%% Find Whistlers
+
+    band1 = sum(SdB(fw>4000 & fw<4500,:));
+    band2 = sum(SdB(fw>8000 & fw<13000,:));
+
+  plot(band1./mean(band1))
+hold on
+plot(band2./mean(band2),'r')  
+%%
+    window = 100;
+    n=20;
+    band = filter(ones(1,n)/n,1,band);
+    band = band - min(band);
+    band = band(20:end);
+
+    high = false(length(band),1);
+    highSum = high;
+    for i = 1 : length(high)
+        
+        if i <= window
+           cutoff = i-1;
+        else
+            cutoff = window;
+        end
+        
+        if band(i) / median(band(i-cutoff:i-1)) > 1.1
+            high(i) = true;
+        else
+            high(i) = false;
+        end
+        
+        
+        if i>2 && high(i-2) & high(i)
+            highSum(i) = true;
+        end
+        
+        
+        
+    end
+
+    
+    
+    subplot(2,1,1)
+    plot(band)
+    subplot(2,1,2)
+    plot(high)
+    hold on
+    plot(highSum,'r')
+    hold off
+    
+    
+    
+    
     
