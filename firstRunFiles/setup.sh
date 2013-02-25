@@ -101,5 +101,12 @@ chown sferix /home/sferix/preamp/*
 cp ${DIR}preamp.sh /etc/init.d/
 ln -s /etc/init.d/preamp.sh /etc/rc5.d/S90preamp
 
+# Setup wideband and R-files folders
+mkdir /home/sferix/R-fies
+chown sferix /home/sferix/R-files
+mkdir /home/sferix/wideband
+chown sferix /home/sferix/wideband
+
+
 echo 'Reboot recommended'
 
