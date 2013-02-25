@@ -93,7 +93,41 @@ for fileName in filenames:
 	Mw = numpy.arange(0,Nw/2)
 	fw = Fs * Mw / Nw
 	tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
-	
+
+## Test for Whistlers
+	if whistler:
+		freq = [4., 4.5]
+		window = 100
+		innerWindow = 10
+		threshold = 4
+		n = 20
+		
+		# Select power in frequency range
+		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+		band = numpy.sum(SdB[freqRange,:],axis=0)
+
+		# Smooth the data
+		weights = numpy.repeat(1.0, n) / n
+		band = numpy.convolve(band, weights)[n-1:-(n-1)]
+
+		high = numpy.zeros(len(band),1)
+		highSum = high.copy()
+
+		for center in range(window, len(band) - window):
+			bandWindow = band[center - window : center + window]
+			bandWindow = bandWindow - numpy.min(bandWindow)
+			
+			prePower = threshold * numpy.mean(bandWindow[:(window - innerWindow)])
+			postPower = threshold * numpy.mean(bandWindow[(window + innerWindow):])
+
+			if bandWindow(center) > prePower and bandWindow(center) > postPower:
+				high[center] = 1
+				highSum[center] = highSum[center - 1] + 1
+
+		timeStep = tw[1] - tw[0]
+		whistlerLength = numpy.round(0.05 / timeStep)
+		whistlerTest = highSum > whistlerLength
+						
 ## Plotting
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
 	
@@ -136,21 +170,13 @@ for fileName in filenames:
 		ax1.set_aspect('auto')
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
 		saveName = output + fileName[:-6] + str(i).zfill(2) + appendText + '.png'
-		if whistler:
-#			plt.subplot(gs[2])
-#			freq = [3.5, 7.]
-#			freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
-#			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
-#			plt.xlim(tStart, tEnd)
-#		        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
-	
-#	       	 	plt.subplot(gs[4])
+		if whistler and numpy.sum(int(whistlerTest[time[0]:time[1]])) > 1:
 			plt.subplot(gs[2])
-			freq = [4., 5.]
-	       		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
-		
-		plt.savefig(saveName,dpi = dpiSetting)
+                        plt.savefig(saveName,dpi = dpiSetting)
+
+		else:
+			plt.savefig(saveName,dpi = dpiSetting)
 	
