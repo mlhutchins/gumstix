@@ -18,6 +18,16 @@ timeStep = int(args.time)
 output = args.output
 
 ## Read in Wideband VLF Data
+## Function definitions
+
+def find_closest(A, target):
+	#A must be sorted
+	idx = A.searchsorted(target)
+	idx = numpy.clip(idx, 1, len(A)-1)
+	left = A[idx-1]
+	right = A[idx]
+	idx -= target - left < right - target
+	return idx
 
 fid = open(fileName, 'rb')
 
@@ -73,14 +83,6 @@ tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
 
 ## Plotting
 
-def find_closest(A, target):
-    #A must be sorted
-    idx = A.searchsorted(target)
-    idx = numpy.clip(idx, 1, len(A)-1)
-    left = A[idx-1]
-    right = A[idx]
-    idx -= target - left < right - target
-    return idx
 
 imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
 
