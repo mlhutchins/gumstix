@@ -13,6 +13,7 @@ parser.add_argument('-o','--output', action='store', metavar='output', default='
 parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figure width in inches (<4" not recommended)')
 parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
 parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
+parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -22,6 +23,8 @@ output = args.output
 imageWidth = float(args.sizeX)
 imageHeight = float(args.sizeY)
 dpiSetting = float(args.dpi)
+appendText = args.append
+
 
 ## Function definitions
 
@@ -132,7 +135,7 @@ for fileName in filenames:
 		plt.ylim(0,find_closest(fw,freqMax*1000))
 		ax1.set_aspect('auto')
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
-		saveName = output + fileName[:-6] + str(i).zfill(2) + '.png'
+		saveName = output + fileName[:-6] + str(i).zfill(2) + appendText + '.png'
 		if whistler:
 #			plt.subplot(gs[2])
 #			freq = [3.5, 7.]
