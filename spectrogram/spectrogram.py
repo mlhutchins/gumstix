@@ -14,6 +14,7 @@ parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figur
 parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
 parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
+parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -24,7 +25,7 @@ imageWidth = float(args.sizeX)
 imageHeight = float(args.sizeY)
 dpiSetting = float(args.dpi)
 appendText = args.append
-
+whistlerSearch = args.search
 
 ## Function definitions
 
@@ -170,13 +171,18 @@ for fileName in filenames:
 		ax1.set_aspect('auto')
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
 		saveName = output + fileName[:-6] + str(i).zfill(2) + appendText + '.png'
-		if whistler and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
+		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
 			plt.subplot(gs[2])
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
-
+		elif whistler and not whistlerSearch:
+			plt.subplot(gs[2])
+                        plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+                        plt.xlim(tStart, tEnd)
+                        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+                        plt.savefig(saveName,dpi = dpiSetting)
 		elif not whistler:
 			plt.savefig(saveName,dpi = dpiSetting)
 	
