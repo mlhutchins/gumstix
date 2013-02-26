@@ -198,14 +198,14 @@ for fileName in filenames:
 		# Aspect ratio to fill entire plot
 		ax1.set_aspect('auto')
 		
-		# Set title to give filename and sampling frequency
-		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
-		
 		# Set savename to be filename with updated time increments and the appended text
 		name = fileName.split("/")
 		name = name[-1]
 		saveName = output + name[:-6] + str(i).zfill(2) + appendText + '.png'
-		
+	
+                # Set title to give filename and sampling frequency
+                plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
+	
 		# Plot whistler search only if a whistler is detected
 		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
 			# Plot total energy in the passband as subplot
