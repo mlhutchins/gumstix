@@ -147,8 +147,6 @@ for fileName in filenames:
 	if whistler:
 		# Maximum frequency to plot in whistler search
 		freqMax = 13.
-		# Setup correct subplot size
-		gs = matplotlib.gridspec.GridSpec(3,1,height_ratios=[5,.5,1])
 	else:
 		# Maximum frequency to plot spectrogram based on the FFT harmonics
 		freqMax = (fw[-1]/1000)
@@ -165,7 +163,7 @@ for fileName in filenames:
 		
 		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
-			ax1 = fig.add_subplot(gs[0])
+			ax1 = fig.add_subplot(2,1,1)
 			plt.imshow(SdB, origin='lower',vmin = -40, vmax = -15)
 		else:
 			ax1 = fig.add_subplot(1,1,1)
@@ -210,7 +208,7 @@ for fileName in filenames:
 		# Plot whistler search only if a whistler is detected
 		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
 			# Plot total energy in the passband as subplot
-			plt.subplot(gs[2])
+			plt.subplot(2,1,2)
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
@@ -219,7 +217,7 @@ for fileName in filenames:
 		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
 			# Plot total energy in the passband as subplot
-			plt.subplot(gs[2])
+			plt.subplot(2,1,2)
                         plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
                         plt.xlim(tStart, tEnd)
                         plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
