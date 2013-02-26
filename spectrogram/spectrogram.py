@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import sys
 import argparse
 
+# Setup the structure for the input options and arguments
 parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
 parser.add_argument('fileName', metavar='filename', type=str, nargs='+', help = 'Name (list) of wideband file(s)')
 parser.add_argument('-t','--time', metavar = 'time', default = 15, help = 'Time length of each plot (seconds)')
@@ -29,6 +30,7 @@ whistlerSearch = args.search
 
 ## Function definitions
 
+# Find closest gets the index in A that is closest to target
 def find_closest(A, target):
 	#A must be sorted
 	idx = A.searchsorted(target)
@@ -97,10 +99,15 @@ for fileName in filenames:
 
 ## Test for Whistlers
 	if whistler:
+		# Set the frequency band to search in
 		freq = [4., 4.5]
+		# How large of a window to use for the pre and post whistler energy
 		window = 100
+		# Estimated length of a whistler, +-innerWindow not used in the mean pre/post energy
 		innerWindow = 10
+		# Threshold is how much larger a whistler needs to be than the nearby noise
 		threshold = 4
+		# Size of the smoothing filter
 		n = 20
 		
 		# Select power in frequency range
@@ -111,50 +118,68 @@ for fileName in filenames:
 		weights = numpy.repeat(1.0, n) / n
 		band = numpy.convolve(band, weights)[n-1:-(n-1)]
 
-		high = numpy.zeros((len(band),1))
-		highSum = high.copy()
+		# Initialize arrays
+		highSum = numpy.zeros((len(band),1))
 
+		# Run through the band except for the first and last window points
 		for center in range(window, len(band) - window):
 			bandWindow = band[center - window : center + window]
+			
+			# Normalize the data to the lowest point in the bandWindow
 			bandWindow = bandWindow - numpy.min(bandWindow)
 			
+			# Get the pre and post test point energy
 			prePower = threshold * numpy.mean(bandWindow[:(window - innerWindow)])
 			postPower = threshold * numpy.mean(bandWindow[(window + innerWindow):])
 
+			# Compare the current point to the nearby noise level
 			if bandWindow[window] > prePower and bandWindow[window] > postPower:
-				high[center] = 1
 				highSum[center] = highSum[center - 1] + 1
 
-		step = tw[1] - tw[0]
-		whistlerLength = numpy.round(0.05 / step)
+		# Define a whistler to be any signal that lasts longer than 0.05 seconds
+		whistlerLength = numpy.round(0.05 / (tw[1] - tw[0]))
 		whistlerTest = highSum > whistlerLength
 						
 ## Plotting
+	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
 	
 	if whistler:
+		# Maximum frequency to plot in whistler search
 		freqMax = 13.
+		# Setup correct subplot size
 		gs = matplotlib.gridspec.GridSpec(3,1,height_ratios=[5,.5,1])
-#		gs = matplotlib.gridspec.GridSpec(5,1,height_ratios=[5,.5,1,.5,1])
 	else:
+		# Maximum frequency to plot spectrogram based on the FFT harmonics
 		freqMax = (fw[-1]/1000)
-	figAspect = 4*timeStep/freqMax
-	figAspect = figAspect * (freqMax/24)
+	
+	# Plot each image
 	for i in imageSteps:
+		# Initialize figure
 		fig = plt.figure(figsize=(imageWidth,imageHeight))
+		
+		# Get start and end of the time window
 		tStart = i
 		tEnd = i + timeStep
 		time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
+		
+		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
 			ax1 = fig.add_subplot(gs[0])
 			plt.imshow(SdB, origin='lower',vmin = -40, vmax = -15)
 		else:
 			ax1 = fig.add_subplot(1,1,1)
 			plt.imshow(SdB, origin='lower')
+			
+		# Generate and label colorbar
 		cbar = plt.colorbar(orientation = 'horizontal')
 		cbar.set_label('Spectral Power (dB)')
+		
+		# Set plot labels
 		plt.xlabel('Time (s)')
 		plt.ylabel('Frequency (kHz)')
+		
+		# Set X and Y tick marks to be integer values
 		tStep = tw[1] - tw[0]
 		tStep = int(numpy.round(1 / tStep))
 		tickXloc = numpy.arange(0,len(tw),step=tStep)
@@ -166,23 +191,41 @@ for fileName in filenames:
 		tickYlabel = numpy.round(fw[tickYloc]/1000)
 		plt.xticks(tickXloc,tickXlabel.astype(int))
 		plt.yticks(tickYloc,tickYlabel.astype(int))
+		
+		# Set the spectrogram view limits
 		plt.xlim(time[0], time[1])
 		plt.ylim(0,find_closest(fw,freqMax*1000))
+		
+		# Aspect ratio to fill entire plot
 		ax1.set_aspect('auto')
+		
+		# Set title to give filename and sampling frequency
 		plt.title(fileName + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
-		saveName = output + fileName[:-6] + str(i).zfill(2) + appendText + '.png'
+		
+		# Set savename to be filename with updated time increments and the appended text
+		name = fileName.split("/")
+		name = name[-1]
+		saveName = output + name[:-6] + str(i).zfill(2) + appendText + '.png'
+		
+		# Plot whistler search only if a whistler is detected
 		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
+			# Plot total energy in the passband as subplot
 			plt.subplot(gs[2])
 	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
+                        
+		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
+			# Plot total energy in the passband as subplot
 			plt.subplot(gs[2])
                         plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
                         plt.xlim(tStart, tEnd)
                         plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
+                        
+		# Plot normal spectrogram
 		elif not whistler:
 			plt.savefig(saveName,dpi = dpiSetting)
 	
