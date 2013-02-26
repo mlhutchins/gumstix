@@ -163,7 +163,8 @@ for fileName in filenames:
 		
 		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
-			ax1 = fig.add_subplot(2,1,1)
+			#ax1 = fig.add_subplot(2,1,1)
+			ax1 = fig.add_axes([.1,.3,.8,.6])
 			plt.imshow(SdB, origin='lower',vmin = -40, vmax = -15)
 		else:
 			ax1 = fig.add_subplot(1,1,1)
@@ -208,8 +209,9 @@ for fileName in filenames:
 		# Plot whistler search only if a whistler is detected
 		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
 			# Plot total energy in the passband as subplot
-			plt.subplot(2,1,2)
-	       		plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+			#plt.subplot(2,1,2)
+	       		fig.add_axes([.1,.05,.8,.15])
+			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
@@ -217,8 +219,9 @@ for fileName in filenames:
 		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
 			# Plot total energy in the passband as subplot
-			plt.subplot(2,1,2)
-                        plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+			#plt.subplot(2,1,2)
+                        fig.add_axes([.1,.05,.8,.15])
+			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
                         plt.xlim(tStart, tEnd)
                         plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)
