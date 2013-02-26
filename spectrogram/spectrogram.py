@@ -170,9 +170,9 @@ for fileName in filenames:
 			ax1 = fig.add_subplot(1,1,1)
 			plt.imshow(SdB, origin='lower')
 			
-		# Generate and label colorbar
-		cbar = plt.colorbar(orientation = 'horizontal')
-		cbar.set_label('Spectral Power (dB)')
+			# Generate and label colorbar
+			cbar = plt.colorbar(orientation = 'horizontal')
+			cbar.set_label('Spectral Power (dB)')
 		
 		# Set plot labels
 		plt.xlabel('Time (s)')
