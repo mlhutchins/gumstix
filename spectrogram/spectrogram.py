@@ -229,4 +229,6 @@ for fileName in filenames:
 		# Plot normal spectrogram
 		elif not whistler:
 			plt.savefig(saveName,dpi = dpiSetting)
-	
+		
+		# Close the plot
+		plt.close()	
