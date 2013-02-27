@@ -90,6 +90,47 @@
     xlim([16 19.5])
     
 
+%% Find Whistlers: Abe De-chirping
+    
+    % Get the left shift-vector in seconds for a D = 1 constant
+    fShift = 1./sqrt(fw);
+    fShift(1) = fShift(2);
+    
+    % Convert to seconds in units of time step
+    fSamp = 1/(tw(2)-tw(1));
+    fShift = fSamp * fShift;
+
+    % Generate a coarse index to shift each frequency to de-chirp it
+    Dtest = 100:10:200;
+    
+    
+    for i = 1 : length(Dtest)
+        
+        shift = zeros(size(S));
+        
+        D = Dtest(i);
+        
+        intShift = ceil(0.5 * D * fShift);
+        
+        % Shift each row of S
+        for j = 1 : length(fw);%round(length(fw)/10) : round(length(fw)/3)
+            shift(j,:) = circshift(S,[1, -intShift(j)]);
+        end
+            
+        % Get total power in each column
+        
+        power(i,:) = (sum(shift,1).^4);
+        
+        figure
+        imagesc(log10(shift))
+        xlim(size(S,2).*([16 19.5]./60))
+        set(gca,'YDir','Normal')
+
+    end
+        
+    figure
+    plot(sum(power'))
+    
 %% Find Whistlers
 
     band = sum(SdB(fw>4000 & fw<4500,:));
@@ -100,8 +141,8 @@
     
     n=20;
     band = filter(ones(1,n)/n,1,band);
-    band = band - min(band);
-    band = band(20:end);
+%     band = band - min(band);
+%     band = band(20:end);
 
     high = false(length(band),1);
     highSum = high + 0;
