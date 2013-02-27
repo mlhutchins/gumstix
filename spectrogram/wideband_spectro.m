@@ -92,6 +92,11 @@
 
 %% Find Whistlers: Abe De-chirping
     
+%     % Whiten the noise by adding a maximum value
+%     SWhite = S;
+%     top = prctile(SWhite(:),99.9);
+%     SWhite(SWhite > top) = top;
+
     % Get the left shift-vector in seconds for a D = 1 constant
     fShift = 1./sqrt(fw);
     fShift(1) = fShift(2);
@@ -114,23 +119,27 @@
         
         % Shift each row of S
         for j = 1 : length(fw);%round(length(fw)/10) : round(length(fw)/3)
-            shift(j,:) = circshift(S,[1, -intShift(j)]);
+            shift(j,:) = circshift(S(j,:),[1, -intShift(j)]);
         end
             
         % Get total power in each column
         
         power(i,:) = (sum(shift,1).^4);
-        
-        figure
-        imagesc(log10(shift))
-        xlim(size(S,2).*([16 19.5]./60))
-        set(gca,'YDir','Normal')
+% %         
+%         figure
+%         imagesc(log10(shift))
+%         xlim(size(S,2).*([16 19.5]./60))
+%         set(gca,'YDir','Normal')
 
     end
-        
-    figure
-    plot(sum(power'))
     
+    % Plot the total power of each D value for the 4x15 second windows
+    
+    figure
+    
+%     split = squeeze(sum(reshape(power(:,1:end-3),11,floor(5620/4),4),2));
+    plot(power')
+%     plot(sum(power,2))
 %% Find Whistlers
 
     band = sum(SdB(fw>4000 & fw<4500,:));
