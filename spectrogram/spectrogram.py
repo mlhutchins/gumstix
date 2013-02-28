@@ -99,14 +99,28 @@ for fileName in filenames:
 
 ## Test for Whistlers
 	if whistler:
+
+		# Define the time step
+		tStep = tw[1] - tw[0]
+
+		# Initialize arrays
+		highSum = numpy.zeros((len(tw),1))
+
 		# Set the frequency band to search in
 		freq = [4., 4.5]
+
+		# Set the minimum length of a whistler
+		whistlerLength = 0.05 / tStep
+
 		# How large of a window to use for the pre and post whistler energy
-		window = 100
+		window = int(numpy.round(1/tStep))
+
 		# Estimated length of a whistler, +-innerWindow not used in the mean pre/post energy
-		innerWindow = 10
+		innerWindow = int(numpy.round(0.1/tStep))
+
 		# Threshold is how much larger a whistler needs to be than the nearby noise
-		threshold = 4
+		threshold = 4.
+
 		# Size of the smoothing filter
 		n = 20
 		
@@ -118,11 +132,8 @@ for fileName in filenames:
 		weights = numpy.repeat(1.0, n) / n
 		band = numpy.convolve(band, weights)[n-1:-(n-1)]
 
-		# Initialize arrays
-		highSum = numpy.zeros((len(band),1))
-
 		# Run through the band except for the first and last window points
-		for center in range(window, len(band) - window):
+		for center in range(window, len(highSum) - window):
 			bandWindow = band[center - window : center + window]
 			
 			# Normalize the data to the lowest point in the bandWindow
@@ -134,10 +145,9 @@ for fileName in filenames:
 
 			# Compare the current point to the nearby noise level
 			if bandWindow[window] > prePower and bandWindow[window] > postPower:
-				highSum[center] = highSum[center - 1] + 1
+							highSum[center] = highSum[center - 1] + 1
 
-		# Define a whistler to be any signal that lasts longer than 0.05 seconds
-		whistlerLength = numpy.round(0.05 / (tw[1] - tw[0]))
+		# Check for any sustained signal longer then a whistler length
 		whistlerTest = highSum > whistlerLength
 						
 ## Plotting
