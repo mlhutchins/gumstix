@@ -222,6 +222,8 @@ for fileName in filenames:
 			#plt.subplot(2,1,2)
 	       		fig.add_axes([.1,.05,.8,.15])
 			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+			#plt.plot(tw,ratioPost)
+
 	    		plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
                         plt.savefig(saveName,dpi = dpiSetting)

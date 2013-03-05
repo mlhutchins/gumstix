@@ -1,8 +1,13 @@
 %read in the wideband VLF data file
-%     fid=fopen('WB20120624191600.dat'); % Null Case
-    fid=fopen('WB20130219000000.dat'); % Whistler 1
+%     fid=fopen('WB20120624191600.dat'); % 96 kHz sample
+%     fid=fopen('WB20130219000000.dat'); % Whistler 1
 %     fid=fopen('WB20130219003000.dat'); % Whistler 2
 
+    cd ~/Documents/ESS/Gumstix/spectrogram/
+
+
+    fid = fopen('WB20130219000900.dat'); % False positive
+    
     unixTime = fread(fid,1,'int');  %seconds since 1 Jan 1970
     Fs= fread(fid,1,'double');  %precise sampling rate
     offsetSamples = fread(fid,1,'double');
@@ -53,7 +58,7 @@
     tw = (1:nwin)*0.5*Nw/Fs; % Time of each window
 
 %% Plot the power spectra
-%     figure
+    figure
 
     % Adds pads to data so pcolor is centered correctly
     dfw = fw(2)-fw(1);
@@ -62,7 +67,7 @@
     twpad = [tw tw(end)+dtw]-0.5*dtw;
     SdBpad = SdB([1:end end],[1:end end]);
     
-    subplot(2,1,1)
+%     subplot(2,1,1)
     
     % Plot with pcolor
     pcolor(twpad,fwpad,SdBpad)
@@ -155,6 +160,7 @@
 
     high = false(length(band),1);
     highSum = high + 0;
+
     for i = window + 1 : length(high) - window
         
         bandWindow = band(i - window : i + window);
@@ -164,24 +170,21 @@
         postPower = threshold * mean(bandWindow(window + innerWindow : end));
         
         if bandWindow(window) > prePower && bandWindow(window) > postPower
-            high(i) = true;
-        else
-            high(i) = false;
+            highSum(i) = highSum(i-1) + 1;
         end
         
-        if high(i)
-            highSum(i) = highSum(i-1) + high(i);
-        end
-        
+        ratioPre(i) = bandWindow(window)./mean(bandWindow(1 : window - innerWindow));
+        ratioPost(i) = bandWindow(window)./mean(bandWindow(window + innerWindow : end));
+
         
     end
 
-    timeStep = tw(2) - tw(1);
-    whistlerTest = highSum > round(0.05/timeStep);
+    whistlerLength = 0.05 / (tw(2) - tw(1));
+    whistlerTest = highSum > whistlerLength;
     
     
     figure
-        subplot(3,1,1)
+    subplot(3,1,1)
     
     % Plot with pcolor
     pcolor(twpad,fwpad,SdBpad)
@@ -194,13 +197,16 @@
 %     ylabel(c,'Spectral Power (dB)')
     
     subplot(3,1,2)
-    plot(band)
-    xlim([0 length(band)])
+    plot(tw,band)
+    xlim([0 60])
+    
     subplot(3,1,3)
-    plot(whistlerTest)
+    plot(tw,whistlerTest)
 
-    xlim([0 length(band)])
+    xlim([0 60])
 
+    subplot(3,1,3)
+    
     
     
     
