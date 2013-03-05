@@ -227,7 +227,7 @@ for fileName in filenames:
 
 	    		plt.xlim(tStart, tEnd)
 			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
-			plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz, Trigger: ' + str(trigger[0]) + 's')
+			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (1/%d)' % (freq[0],freq[1],trigger[0],len(trigger)))
                         plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot whistler high contrast plot
@@ -236,7 +236,7 @@ for fileName in filenames:
                         fig.add_axes([.1,.05,.8,.15])
 			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
                         plt.xlim(tStart, tEnd)
-                        plt.title('Spectral Power: ' + str(freq[0]) + ' - ' + str(freq[1]) + ' kHz')
+			plt.title('Spectral Power: %.1f - %.1f kHz' % (freq[0],freq[1]))
                         plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot normal spectrogram
