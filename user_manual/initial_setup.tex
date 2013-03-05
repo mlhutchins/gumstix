@@ -66,6 +66,19 @@ The Workstation setup method requires:
 \section*{Website Setup}
 \end{centering}
 
+\subsection*{Method 3: Manual microSD Editing}
+
+The file that need to be edited on the rootfs partition are:
+
+\begin{verbatim}
+/etc/network/interfaces
+/etc/resolv.conf
+/etc/ssh/sshd_config
+\end{verbatim}
+
+The interfaces file lists the IP information of the machine whole the resolv.conf file is for the DNS information.
+The sshd\_config file on line 13 sets the port with which SSH is allowed.
+
 \subsection*{Starting apache2}
 
 To get apache2 running only one change needs to be made in the /etc/apache2/httpd.conf file.
