@@ -35,7 +35,7 @@ rm /etc/rc*.d/*NetworkManager
 cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
-cp ${DIR}networkConfig.sh /home/sferix/
+cp ${DIR}networkSetup.sh /home/sferix/
 cp ${DIR}asound.state /etc/
 cp ${DIR}asound.state /home/sferix/asound.state.default
 cp ${DIR}asound.txt /home/sferix/asound.txt
@@ -102,11 +102,14 @@ cp ${DIR}preamp.sh /etc/init.d/
 ln -s /etc/init.d/preamp.sh /etc/rc5.d/S90preamp
 
 # Setup wideband and R-files folders
-mkdir /home/sferix/R-fies
+mkdir /home/sferix/R-files
 chown sferix /home/sferix/R-files
 mkdir /home/sferix/wideband
 chown sferix /home/sferix/wideband
 
+# Install VIM syntax file
+tar -zxvf ${DIR}syntax.tar.gz
+cp -r ${DIR}syntax /usr/share/vim/vim72/
 
 echo 'Reboot recommended'
 
