@@ -9,8 +9,11 @@
 \textheight 9in
 \begin{document}
 
+The WWLLN Service Unit v4 runs a customized version of the Angstrom Linux distribution for ARM processors.
+For additional help contact Michael Hutchins (\mbox{mlhutch@uw.edu}) or Bob Holzworth (\mbox{bobholz@ess.washington.edu}).
+
 \begin{centering}
-\section{WWLLN Service Unit v4 Initial Setup}
+\section*{WWLLN Service Unit v4 Initial Setup}
 
 \end{centering}
 
@@ -57,14 +60,19 @@ The Workstation setup method requires:
 \item{USB Mouse}
 \end{itemize}
 
+Connect the powered USB hub to the back USB port of the service unit, and attach the keyboard and mouse to the hub.
+Connect a monitor to the HDMI port, DVI - HDMI adapters work as well.
+Power on the box, it will take a few minutes for the login screen to show up.
+Select ``Other...'' and login with the username \textbf{host}.
+Wait a few more minutes for the graphical display to load.
+
+Adjust the network settings by either changing the files listed in Method 1, or by logging in as root as adjusting them through System $\rightarrow$ Network in the top menu bar.
+
 \begin{enumerate}
 \item{Connect an HDMI display, keyboard and mouse}
 \item{Set network information through GUI}
 \end{enumerate}
 
-\begin{centering}
-\section*{Website Setup}
-\end{centering}
 
 \subsection*{Method 3: Manual microSD Editing}
 
@@ -79,6 +87,11 @@ The file that need to be edited on the rootfs partition are:
 The interfaces file lists the IP information of the machine whole the resolv.conf file is for the DNS information.
 The sshd\_config file on line 13 sets the port with which SSH is allowed.
 
+
+\begin{centering}
+\section*{Website Setup}
+\end{centering}
+
 \subsection*{Starting apache2}
 
 To get apache2 running only one change needs to be made in the /etc/apache2/httpd.conf file.
@@ -90,7 +103,7 @@ Line 96:	#ServerName www.example.com:80
 Needs to be uncommented and changed to the hostname of the computer, e.g.:
 
 \begin{verbatim}
-Line96:	ServerName bobholz-3.ess.washington.edu:80
+Line96:	ServerName gumstix.ess.washington.edu:80
 \end{verbatim}
 
 Then httpd needs to be restarted:
