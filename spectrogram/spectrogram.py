@@ -16,6 +16,7 @@ parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figu
 parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
 parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
+parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -27,6 +28,7 @@ imageHeight = float(args.sizeY)
 dpiSetting = float(args.dpi)
 appendText = args.append
 whistlerSearch = args.search
+verboseMode = args.verbose
 
 ## Function definitions
 
@@ -42,6 +44,10 @@ def find_closest(A, target):
 
 ## Process each listed file
 for fileName in filenames:
+
+## Print out filename if in verbose mode
+    if verboseMode:
+        print fileName
 
 ## Read in Wideband VLF Data
 
