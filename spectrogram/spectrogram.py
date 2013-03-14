@@ -17,6 +17,7 @@ parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image D
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
 parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
+parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -29,7 +30,8 @@ dpiSetting = float(args.dpi)
 appendText = args.append
 whistlerSearch = args.search
 verboseMode = args.verbose
-
+zoomMode = args.zoom
+zoomWindow = 0.5
 ## Function definitions
 
 # Find closest gets the index in A that is closest to target
@@ -158,7 +160,8 @@ for fileName in filenames:
 
 		# Record the trigger times
 		triggerTime = tw[whistlerTest[:,0]]
-						
+
+
 ## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
@@ -180,6 +183,12 @@ for fileName in filenames:
 		tEnd = i + timeStep
 		time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
 		
+
+        # Find trigger time of whistlers
+		if numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
+			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
+
+
 		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
 			#ax1 = fig.add_subplot(2,1,1)
@@ -211,7 +220,11 @@ for fileName in filenames:
 		plt.yticks(tickYloc,tickYlabel.astype(int))
 		
 		# Set the spectrogram view limits
-		plt.xlim(time[0], time[1])
+		if zoomMode:
+			zoomTime = [find_closest(tw,trigger[0] - zoomWindow),find_closest(tw,trigger[0] + zoomWindow)]
+			plt.xlim(zoomTime[0],zoomTime[1])
+		else:
+			plt.xlim(time[0], time[1])
 		plt.ylim(0,find_closest(fw,freqMax*1000))
 		
 		# Aspect ratio to fill entire plot
@@ -231,8 +244,8 @@ for fileName in filenames:
 	       		fig.add_axes([.1,.05,.8,.15])
 			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 
-	    		plt.xlim(tStart, tEnd)
-			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
+			plt.xlim(tStart, tEnd)
+
 			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (1/%d)' % (freq[0],freq[1],trigger[0],len(trigger)))
                         plt.savefig(saveName,dpi = dpiSetting)
                         
