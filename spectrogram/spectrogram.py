@@ -159,47 +159,51 @@ def find_dispersion(SdB, fRange):
 	power = numpy.sum(power,axis=1)
 	dispersion = Dtest[power == numpy.max(power)]
 		
-	if len(dispersion) == 1:
-		
-		## Fine dispersion calculation
-		
-		Dtest = numpy.linspace(dispersion-10,dispersion+10,21)
-		
-		# Initialize output array
-		power = numpy.zeros((len(Dtest),spec.shape[0]))
-			
-		for i in range(len(Dtest)):
-				
-			shift = 0. * spec.copy()
-			
-			D = Dtest[i]
-			
-			intShift = numpy.ceil(0.5 * D * fShift);
-	
-			# Shift each row of spec
-			for j in range(len(fRange)):
-				
-				shiftLevel = -intShift[j]
-				shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
-				
-				# Get total power in each column
-				
-				power[i,:] = numpy.sum(shift,1)**4
-				
-	
-		power = numpy.sum(power,axis=1)
-	
-		dispersion = Dtest[power == numpy.max(power)]
-		if len(dispersion) > 1:
-			if verboseMode:
-				print 'Multiple Dispersions: ' + str(dispersion)
-				print 'Choosing: ' + str(dispersion[0])
-			dispersion = dispersion[0]
-			
-	else:
+	if len(dispersion) > 1:
 		if verboseMode:
-			print 'No Single Dispersion Found: ' + str(dispersion)
-		dispersion = 0
+			print 'Multiple Dispersions: ' + str(dispersion)
+			print 'Choosing: ' + str(dispersion[0])
+		dispersion = dispersion[0]
+			
+	## Fine dispersion calculation
+	
+	Dtest = numpy.linspace(dispersion-10,dispersion+10,21)
+	 
+	# Initialize output array
+	power = numpy.zeros((len(Dtest),spec.shape[0]))
+		
+	for i in range(len(Dtest)):
+			
+		shift = 0. * spec.copy()
+		
+		D = Dtest[i]
+		
+		intShift = numpy.ceil(0.5 * D * fShift);
+
+		# Shift each row of spec
+		for j in range(len(fRange)):
+			
+			shiftLevel = -intShift[j]
+			shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
+			
+			# Get total power in each column
+			
+			power[i,:] = numpy.sum(shift,1)**4
+			
+
+	power = numpy.sum(power,axis=1)
+
+	dispersion = Dtest[power == numpy.max(power)]
+	if len(dispersion) > 1:
+		if verboseMode:
+			print 'Multiple Dispersions: ' + str(dispersion)
+			print 'Choosing: ' + str(dispersion[0])
+		dispersion = dispersion[0]
+			
+	#else:
+	#	if verboseMode:
+	#		print 'No Single Dispersion Found: ' + str(dispersion)
+	#	dispersion = 0
 
 	return dispersion
 
@@ -378,7 +382,7 @@ for fileName in filenames:
 
 			plt.xlim(tStart, tEnd)
 
-			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion))
+			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion[0]))
 			
 			if dispersionMode:
 				if numpy.sum(dispersion > 0) > 0:
