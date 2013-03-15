@@ -379,16 +379,21 @@ for fileName in filenames:
 			plt.xlim(tStart, tEnd)
 
 			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion))
-                        plt.savefig(saveName,dpi = dpiSetting)
+			
+			if dispersionMode:
+				if numpy.sum(dispersion > 0) > 0:
+					plt.savefig(saveName,dpi = dpiSetting)
+			else:
+				plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
 			# Plot total energy in the passband as subplot
-                        fig.add_axes([.1,.05,.8,.15])
+			fig.add_axes([.1,.05,.8,.15])
 			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
-                        plt.xlim(tStart, tEnd)
+			plt.xlim(tStart, tEnd)
 			plt.title('Spectral Power: %.1f - %.1f kHz' % (freq[0],freq[1]))
-                        plt.savefig(saveName,dpi = dpiSetting)
+			plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot normal spectrogram
 		elif not whistler:
