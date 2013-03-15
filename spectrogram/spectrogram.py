@@ -191,12 +191,14 @@ def find_dispersion(SdB, fRange):
 	
 		dispersion = Dtest[power == numpy.max(power)]
 		if len(dispersion) > 1:
-			print 'Multiple Dispersions: ' + str(dispersion)
-			print 'Choosing: ' + str(dispersion[0])
+			if verboseMode:
+				print 'Multiple Dispersions: ' + str(dispersion)
+				print 'Choosing: ' + str(dispersion[0])
 			dispersion = dispersion[0]
 			
 	else:
-		print 'No Single Dispersion Found: ' + str(dispersion)
+		if verboseMode:
+			print 'No Single Dispersion Found: ' + str(dispersion)
 		dispersion = 0
 
 	return dispersion
@@ -205,8 +207,8 @@ def find_dispersion(SdB, fRange):
 for fileName in filenames:
 
 ## Print out filename if in verbose mode
-    if verboseMode:
-        print fileName
+	if verboseMode:
+		print fileName
 
 ## Read in Wideband VLF Data
 
