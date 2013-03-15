@@ -31,6 +31,8 @@ appendText = args.append
 whistlerSearch = args.search
 verboseMode = args.verbose
 zoomMode = args.zoom
+# Set hardcoded parameters
+freq = [4., 4.5]
 zoomWindow = 0.5
 ## Function definitions
 
@@ -43,6 +45,70 @@ def find_closest(A, target):
 	right = A[idx]
 	idx -= target - left < right - target
 	return idx
+
+
+
+## Test for Whistlers
+def whistler_test(SdB, freq):
+
+	# Define the time step
+	tStep = tw[1] - tw[0]
+
+	# Initialize arrays
+	highSum = numpy.zeros((len(tw),1))
+
+
+	# Set the minimum length of a whistler
+	whistlerLength = 0.05 / tStep
+
+	# How large of a window to use for the pre and post whistler energy
+	window = int(numpy.round(1/tStep))
+
+	# Estimated length of a whistler, +-innerWindow not used in the mean pre/post energy
+	innerWindow = int(numpy.round(0.1/tStep))
+
+	# Threshold is how much larger a whistler needs to be than the nearby noise
+	threshold = 4.
+
+	# Size of the smoothing filter
+	n = 20
+	
+	# Select power in frequency range
+	freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
+	band = numpy.sum(SdB[freqRange,:],axis=0)
+
+	# Smooth the data
+	weights = numpy.repeat(1.0, n) / n
+	band = numpy.convolve(band, weights)[n-1:-(n-1)]
+
+	# Run through the band except for the first and last window points
+	for center in range(window, len(highSum) - window):
+		bandWindow = band[center - window : center + window]
+		
+		# Normalize the data to the lowest point in the bandWindow
+		bandWindow = bandWindow - numpy.min(bandWindow)
+		
+		# Get the pre and post test point energy
+		prePower = threshold * numpy.mean(bandWindow[:(window - innerWindow)])
+		postPower = threshold * numpy.mean(bandWindow[(window + innerWindow):])
+
+		# Compare the current point to the nearby noise level
+		if bandWindow[window] > prePower and bandWindow[window] > postPower:
+						highSum[center] = highSum[center - 1] + 1
+
+	# Check for any sustained signal longer then a whistler length
+	whistlerTest = highSum > whistlerLength
+
+	# Remove successive triggers (leading edge trigger)
+	for i in range(len(whistlerTest)-1):
+		n = len(whistlerTest)
+		if whistlerTest[n-i-1]:
+			whistlerTest[n-i] = False
+
+	# Record the trigger times
+	triggerTime = tw[whistlerTest[:,0]]
+
+	return [whistlerTest, triggerTime, freqRange]
 
 ## Process each listed file
 for fileName in filenames:
@@ -105,62 +171,12 @@ for fileName in filenames:
 	fw = Fs * Mw / Nw
 	tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
 
-## Test for Whistlers
-	if whistler:
-
-		# Define the time step
-		tStep = tw[1] - tw[0]
-
-		# Initialize arrays
-		highSum = numpy.zeros((len(tw),1))
-
-		# Set the frequency band to search in
-		freq = [4., 4.5]
-
-		# Set the minimum length of a whistler
-		whistlerLength = 0.05 / tStep
-
-		# How large of a window to use for the pre and post whistler energy
-		window = int(numpy.round(1/tStep))
-
-		# Estimated length of a whistler, +-innerWindow not used in the mean pre/post energy
-		innerWindow = int(numpy.round(0.1/tStep))
-
-		# Threshold is how much larger a whistler needs to be than the nearby noise
-		threshold = 4.
-
-		# Size of the smoothing filter
-		n = 20
-		
-		# Select power in frequency range
-		freqRange = numpy.arange(find_closest(fw,freq[0]*1000),find_closest(fw,freq[1]*1000))
-		band = numpy.sum(SdB[freqRange,:],axis=0)
-
-		# Smooth the data
-		weights = numpy.repeat(1.0, n) / n
-		band = numpy.convolve(band, weights)[n-1:-(n-1)]
-
-		# Run through the band except for the first and last window points
-		for center in range(window, len(highSum) - window):
-			bandWindow = band[center - window : center + window]
-			
-			# Normalize the data to the lowest point in the bandWindow
-			bandWindow = bandWindow - numpy.min(bandWindow)
-			
-			# Get the pre and post test point energy
-			prePower = threshold * numpy.mean(bandWindow[:(window - innerWindow)])
-			postPower = threshold * numpy.mean(bandWindow[(window + innerWindow):])
-
-			# Compare the current point to the nearby noise level
-			if bandWindow[window] > prePower and bandWindow[window] > postPower:
-							highSum[center] = highSum[center - 1] + 1
-
-		# Check for any sustained signal longer then a whistler length
-		whistlerTest = highSum > whistlerLength
-
-		# Record the trigger times
-		triggerTime = tw[whistlerTest[:,0]]
-
+# Get whistler data
+if whistler:
+	test = whistler_test(SdB,freq)
+	whistlerTest = test[0]
+	triggerTime = test[1]
+	freqRange = test[2]
 
 ## Plotting
 	# Number of images
@@ -185,8 +201,10 @@ for fileName in filenames:
 		
 
         # Find trigger time of whistlers
-		if numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
+		if numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
 			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
+		else:
+			trigger = []
 
 
 		# Plot the spectrogram and set colorbar limits for whistler case
@@ -220,7 +238,7 @@ for fileName in filenames:
 		plt.yticks(tickYloc,tickYlabel.astype(int))
 		
 		# Set the spectrogram view limits
-		if zoomMode:
+		if zoomMode and len(trigger)>0:
 			zoomTime = [find_closest(tw,trigger[0] - zoomWindow),find_closest(tw,trigger[0] + zoomWindow)]
 			plt.xlim(zoomTime[0],zoomTime[1])
 		else:
