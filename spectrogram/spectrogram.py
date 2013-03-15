@@ -13,11 +13,12 @@ parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to w
 parser.add_argument('-o','--output', action='store', metavar='output', default='',type=str,help = 'Output directory')
 parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figure width in inches (<4" not recommended)')
 parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
-parser.add_argument('-d','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
+parser.add_argument('-r','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
 parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
+parser.add_argument('-d','--dispersion',action='store_true',help='Select events based on dispersion')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -31,9 +32,16 @@ appendText = args.append
 whistlerSearch = args.search
 verboseMode = args.verbose
 zoomMode = args.zoom
+dispersionMode = args.dispersion
+
+# Set whistler to be true if either search or dispersion mode is enabled
+if whistlerSearch or dispersionMode:
+	whistler = True
+
 # Set hardcoded parameters
 freq = [4., 4.5]
 zoomWindow = 0.5
+
 ## Function definitions
 
 # Find closest gets the index in A that is closest to target
@@ -109,6 +117,47 @@ def whistler_test(SdB, freq):
 	triggerTime = tw[whistlerTest[:,0]]
 
 	return [whistlerTest, triggerTime, freqRange]
+
+## Function to find the best fitting dispersion for the input spectrogram
+def find_dispersion(SdB, fw):
+
+	# Calculate the dispersion
+	
+	# Get the left shift-vector in seconds for a D = 1 constant
+	fShift = 1./numpy.sqrt(fw)
+	fShift[0] = fShift[1]
+	
+	# Convert to seconds in units of time step
+	fSamp = 1./(tw[1]-tw[0])
+	fShift = fSamp * fShift
+	
+	# Generate a coarse index to shift each frequency to de-chirp it
+	Dtest = numpy.linspace(100,200,11)
+	
+	# Initialize output array
+	power = numpy.zeros((len(Dtest),spec.shape[0]))
+	
+	for i in range(len(Dtest)):
+	
+		shift = 0. * spec.copy()
+		
+		D = Dtest[i]
+		
+		intShift = numpy.ceil(0.5 * D * fShift);
+
+		# Shift each row of spec
+		for j in range(len(fw)):
+			
+			shiftLevel = -intShift[j]
+			shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
+			
+			# Get total power in each column
+			
+			power[i,:] = numpy.sum(shift,1)**4
+		
+	power = numpy.sum(power,axis=1)
+	dispersion = Dtest[power == numpy.max(power)]
+	return dispersion
 
 ## Process each listed file
 for fileName in filenames:
@@ -252,19 +301,40 @@ if whistler:
 		name = fileName.split("/")
 		name = name[-1]
 		saveName = output + name[:-6] + str(i).zfill(2) + appendText + '.png'
-	
-                # Set title to give filename and sampling frequency
-                plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
-	
+
+        # Set title to give filename and sampling frequency
+		plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
+			
 		# Plot whistler search only if a whistler is detected
-		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 1:
+		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
+			
+			# Get the dispersion of the triggered whistlers
+						
+			dispersion = numpy.zeros((len(triggerTime),1))
+		
+			for i in range(len(triggerTime)):
+				
+				trig = triggerTime[i]
+				
+			# Get the index corresponding to +- zoomWindow around the whistler
+				whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+	
+				# Cut spectrogram down to lower frequency range
+				freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
+	
+				# Select just the spectrogram that is near the whistler
+				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
+			
+				dispersion[i] = find_dispersion(spec,fw[freqCut[0]:freqCut[1]])
+								
+					
 			# Plot total energy in the passband as subplot
-	       		fig.add_axes([.1,.05,.8,.15])
+			fig.add_axes([.1,.05,.8,.15])
 			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
 
 			plt.xlim(tStart, tEnd)
 
-			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (1/%d)' % (freq[0],freq[1],trigger[0],len(trigger)))
+			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion))
                         plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot whistler high contrast plot
