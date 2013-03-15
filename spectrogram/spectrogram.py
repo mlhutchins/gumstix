@@ -119,13 +119,14 @@ def whistler_test(SdB, freq):
 	return [whistlerTest, triggerTime, freqRange]
 
 ## Function to find the best fitting dispersion for the input spectrogram
-def find_dispersion(SdB, fw):
+def find_dispersion(SdB, fRange):
 
-	# Calculate the dispersion
+	## Crude dispersion calculation
 	
 	# Get the left shift-vector in seconds for a D = 1 constant
-	fShift = 1./numpy.sqrt(fw)
-	fShift[0] = fShift[1]
+	
+	fRange[0] = fRange[1]
+	fShift = 1./numpy.sqrt(fRange)
 	
 	# Convert to seconds in units of time step
 	fSamp = 1./(tw[1]-tw[0])
@@ -146,7 +147,7 @@ def find_dispersion(SdB, fw):
 		intShift = numpy.ceil(0.5 * D * fShift);
 
 		# Shift each row of spec
-		for j in range(len(fw)):
+		for j in range(len(fRange)):
 			
 			shiftLevel = -intShift[j]
 			shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
@@ -157,6 +158,47 @@ def find_dispersion(SdB, fw):
 		
 	power = numpy.sum(power,axis=1)
 	dispersion = Dtest[power == numpy.max(power)]
+		
+	if len(dispersion) == 1:
+		
+		## Fine dispersion calculation
+		
+		Dtest = numpy.linspace(dispersion-10,dispersion+10,21)
+		
+		# Initialize output array
+		power = numpy.zeros((len(Dtest),spec.shape[0]))
+			
+		for i in range(len(Dtest)):
+				
+			shift = 0. * spec.copy()
+			
+			D = Dtest[i]
+			
+			intShift = numpy.ceil(0.5 * D * fShift);
+	
+			# Shift each row of spec
+			for j in range(len(fRange)):
+				
+				shiftLevel = -intShift[j]
+				shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
+				
+				# Get total power in each column
+				
+				power[i,:] = numpy.sum(shift,1)**4
+				
+	
+		power = numpy.sum(power,axis=1)
+	
+		dispersion = Dtest[power == numpy.max(power)]
+		if len(dispersion) > 1:
+			print 'Multiple Dispersions: ' + str(dispersion)
+			print 'Choosing: ' + str(dispersion[0])
+			dispersion = dispersion[0]
+			
+	else:
+		print 'No Single Dispersion Found: ' + str(dispersion)
+		dispersion = 0
+
 	return dispersion
 
 ## Process each listed file
@@ -220,14 +262,14 @@ for fileName in filenames:
 	fw = Fs * Mw / Nw
 	tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
 
-# Get whistler data
-if whistler:
-	test = whistler_test(SdB,freq)
-	whistlerTest = test[0]
-	triggerTime = test[1]
-	freqRange = test[2]
+	# Get whistler data
+	if whistler:
+		test = whistler_test(SdB,freq)
+		whistlerTest = test[0]
+		triggerTime = test[1]
+		freqRange = test[2]
 
-## Plotting
+	## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
 	
@@ -250,7 +292,7 @@ if whistler:
 		
 
         # Find trigger time of whistlers
-		if numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
+		if whistler and numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
 			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
 		else:
 			trigger = []
@@ -324,8 +366,8 @@ if whistler:
 	
 				# Select just the spectrogram that is near the whistler
 				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
-			
-				dispersion[i] = find_dispersion(spec,fw[freqCut[0]:freqCut[1]])
+				
+				dispersion[i] = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
 								
 					
 			# Plot total energy in the passband as subplot
