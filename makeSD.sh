@@ -1,15 +1,5 @@
 # Make and populate Gumstix microSD card for WWLLN
 
-# Copy necessary files from ~/bbImages to ~/Work/ and rename
-#cp ~/bbImages/MLO-overo ~/Work/bitbake/MLO
-# Use updated MLO instead
-#cp ~/Work/Angstrom/mlo-updated ~/Work/bitbake/MLO
-#cp ~/bbImages/uImage-overo.bin ~/Work/bitbake/uImage
-#cp ~/bbImages/u-boot-overo.bin ~/Work/bitbake/u-boot.bin
-#cp ~/Work/Angstrom/uImage ~/Work/bitbake/uImage
-#cp ~/Work/Angstrom/u-boot.bin ~/Work/bitbake/u-boot.bin
-#cp ~/bbImages/omap3-console-image-overo.tar.bz2 ~/Work/bitbake/rootfs.tar.bz2
-
 # Card size in bytes /255 /63 /512 to rounded down to get cylinders
 IMG=sakoman-gnome-image.tar.bz2
 UIMAGE=uImage-3.0-r102-omap3-multi.bin
