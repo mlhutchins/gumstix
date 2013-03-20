@@ -100,6 +100,14 @@ The file that need to be edited on the rootfs partition are:
 The interfaces file lists the IP information of the machine whole the resolv.conf file is for the DNS information.
 The sshd\_config file on line 13 sets the port with which SSH is allowed.
 
+The last step, if a non-standard port is being used, is to also alter the built in firewall of iptables and netfilter.
+The firewall settings are stored in:
+
+\begin{verbatim}
+/etc/iptable.rules
+\end{verbatim}
+
+and can be edited as a standard iptables configuration file.
 
 \begin{centering}
 \section*{Website Setup}
