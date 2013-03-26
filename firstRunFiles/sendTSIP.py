@@ -28,9 +28,11 @@ ser = serial.Serial(
 
 messages={'01':'101e4b1003'.decode('hex'),
 		'02':'101e0e1003'.decode('hex'),
-        '03':'10bb00070204ff3db2b8c2408000004140000040c00000ff01ffffffffffffffffffffffffffffffffff1003'.decode('hex'),
-        '04':'108e4e041003'.decode('hex'),
-        '05':'108e20001003108e21001003108e230010031035120200201003'.decode('hex'),
+        '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003 '.decode('hex'),
+             '108e4e041003'.decode('hex'),
+             '108e20001003'.decode('hex'),
+             '108e21001003'.decode('hex'),
+             '108e230010031035120200201003'.decode('hex')],
 		'06':'107a0001000000781003'.decode('hex'),
 		'07':'10bc000606030000000204001003'.decode('hex'),	
 		'50':'108e261003'.decode('hex'),
@@ -44,9 +46,7 @@ while True:
 	print 'Enter the message number to send:'
 	print '		01 - Reset GPS (Hard)'
 	print '		02 - Reset GPS (Warm)'
-	print '		03 - Set GPS Primary Configuration'	
-	print '		04 - Set GPS PPS Configuration'
-	print '		05 - Set to GPS timing and sets default packet output'
+	print '		03 - Configre GPS'	
 	print '		06 - Set NMEA Settings'
 	print '		07 - Switch to NMEA'
 	print '		50 - Write Configuration to ROM'
@@ -59,7 +59,12 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
+        print 'Writing' + str(raw.decode('hex'))
 		ser.write(raw.decode('hex'))
+    elif result in '03':
+        for bin in messages[result]:
+            print bin
+            ser.write(bin)
 	elif result in '07':
 		print '	Switching to NMEA can only be reversed by a manual power cycle.'
 		confirm = raw_input('	Continue (y/n)?')
