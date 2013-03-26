@@ -28,9 +28,9 @@ ser = serial.Serial(
 
 messages={'01':'101e4b1003'.decode('hex'),
 		'02':'101e0e1003'.decode('hex'),
-		'03':'10bbff07ff04ff3f74d474408000004140000040c00000ff01ffffffffff1003'.decode('hex'),
-		'04':'108e4e031003'.decode('hex'),
-		'05':'108ea2001003'.decode('hex'),
+        '03':'10bb00070204ff3db2b8c2408000004140000040c00000ff01ffffffffffffffffffffffffffffffffff1003'.decode('hex'),
+        '04':'108e4e041003'.decode('hex'),
+        '05':'108e20001003108e21001003108e230010031035120200201003'.decode('hex'),
 		'06':'107a0001000000781003'.decode('hex'),
 		'07':'10bc000606030000000204001003'.decode('hex'),	
 		'50':'108e261003'.decode('hex'),
@@ -45,12 +45,12 @@ while True:
 	print '		01 - Reset GPS (Hard)'
 	print '		02 - Reset GPS (Warm)'
 	print '		03 - Set GPS Primary Configuration'	
-	print '		04 - Set GPS PSS Configuration'
-	print '		05 - Set GPS to GPS timing'
+	print '		04 - Set GPS PPS Configuration'
+	print '		05 - Set to GPS timing and sets default packet output'
 	print '		06 - Set NMEA Settings'
 	print '		07 - Switch to NMEA'
-	print '		50 - Write Configuration to ROM',
-	print '		raw - Custom message',
+	print '		50 - Write Configuration to ROM'
+	print '		raw - Custom message'
 	print '		99 - Exit'	
 
 
