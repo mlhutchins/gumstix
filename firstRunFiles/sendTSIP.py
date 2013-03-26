@@ -59,11 +59,11 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
-        print 'Writing' + str(raw.decode('hex').encode('hex'))
+		print 'Writing: ' + str(raw.decode('hex').encode('hex'))
 		ser.write(raw.decode('hex'))
 	elif result in '03':
 		for bin in messages[result]:
-			print bin
+			print 'Writing: ' + str(bin.decode('hex').encode('hex'))
 			ser.write(bin)
 	elif result in '07':
 		print '	Switching to NMEA can only be reversed by a manual power cycle.'
