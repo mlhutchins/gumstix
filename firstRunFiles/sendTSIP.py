@@ -28,7 +28,7 @@ ser = serial.Serial(
 
 messages={'01':'101e4b1003'.decode('hex'),
 		'02':'101e0e1003'.decode('hex'),
-        '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003 '.decode('hex'),
+        '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003'.decode('hex'),
              '108e4e041003'.decode('hex'),
              '108e20001003'.decode('hex'),
              '108e21001003'.decode('hex'),
@@ -59,12 +59,12 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
-        print 'Writing' + str(raw.decode('hex'))
+        print 'Writing' + str(raw.decode('hex').encode('hex'))
 		ser.write(raw.decode('hex'))
-    elif result in '03':
-        for bin in messages[result]:
-            print bin
-            ser.write(bin)
+	elif result in '03':
+		for bin in messages[result]:
+			print bin
+			ser.write(bin)
 	elif result in '07':
 		print '	Switching to NMEA can only be reversed by a manual power cycle.'
 		confirm = raw_input('	Continue (y/n)?')
