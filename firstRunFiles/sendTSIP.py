@@ -63,7 +63,7 @@ while True:
 		ser.write(raw.decode('hex'))
 	elif result in '03':
 		for bin in messages[result]:
-			print 'Writing: ' + str(bin.decode('hex').encode('hex'))
+			print 'Writing: ' + str(bin.encode('hex'))
 			ser.write(bin)
 	elif result in '07':
 		print '	Switching to NMEA can only be reversed by a manual power cycle.'
