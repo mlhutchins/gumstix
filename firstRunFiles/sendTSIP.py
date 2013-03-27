@@ -59,8 +59,8 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
-		print 'Writing: ' + str(raw.decode('hex').encode('hex'))
-		ser.write(raw.decode('hex'))
+		print 'Writing: ' + str(raw)
+		ser.write(raw)
 	elif result in '03':
 		for bin in messages[result]:
 			print 'Writing: ' + str(bin.encode('hex'))

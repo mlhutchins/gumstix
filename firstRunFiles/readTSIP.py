@@ -10,7 +10,7 @@ import sys
 
 # Enable to print messages to console
 
-print_to_console=False
+print_to_console=True
 
 if print_to_console:
 	gpsd = os.popen('ps ax | grep gpsd').read()
@@ -173,7 +173,7 @@ while True:
 			
 			# Print results
 			
-			statement1 = year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds + ', ' + timingInfo[2:]
+			statement1 = year+'/'+month+'/'+day+' '+hours+':'+minutes+':'+seconds # + ', ' + timingInfo[2:]
 
 		else:
 			time.sleep(0.07)
@@ -212,10 +212,10 @@ while True:
 			long = long[0] * 180 / pi
 
 			# Print results
-			statement2a = 'Temperature: ' + str(temp) + \
-				', Latitude: ' + str(lat) + \
-				', Longitude: ' + str(long)
-	
+			statement2a = 'Latitude: ' + str(lat) + \
+				', Longitude: ' + str(long) + \
+				', Temperature: ' + str(temp)
+				
 			# Print GPS Status
 			statement2b = 'GPS Status: ' + gpsStatus[fix] # + ' (' + fix + ')'
 
@@ -238,12 +238,7 @@ while True:
 		else:
 			track = '-1'
 
-		if (len(satLine)>2):
-			sat = str(int(satLine[0:2],16))
-		else:
-			sat = '-1'
-
-		statement3 = 'Satellites tracked: ' + track + ' (of ' + sat + ' available)'
+		statement3 = 'Satellites tracked: ' + track
 
 		# Print out generated messages
 
