@@ -206,12 +206,27 @@ def find_dispersion(SdB, fRange):
 			print 'Choosing: ' + str(dispersion[0])
 		dispersion = dispersion[0]
 			
+
+	# Get de-chirped spectra
+
+	chirp = 0. * spec.copy()
+	D = dispersion
+
+	intShift = numpy.ceil(0.5 * D * fShift);
+
+	# Shift each row of spec
+	for j in range(len(fRange)):
+	
+		shiftLevel = -intShift[j]
+		chirp[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
+	
+
 	#else:
 	#	if verboseMode:
 	#		print 'No Single Dispersion Found: ' + str(dispersion)
 	#	dispersion = 0
 
-	return dispersion
+	return dispersion, chirp
 
 ## Process each listed file
 for fileName in filenames:
@@ -365,10 +380,11 @@ for fileName in filenames:
 			# Get the dispersion of the triggered whistlers
 						
 			dispersion = numpy.zeros((len(triggerTime),1))
-		
-			for i in range(len(triggerTime)):
+			specOrig = {}
+			specChirp = {}
+			for j in range(len(triggerTime)):
 				
-				trig = triggerTime[i]
+				trig = triggerTime[j]
 				
 			# Get the index corresponding to +- zoomWindow around the whistler
 				whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
@@ -378,9 +394,10 @@ for fileName in filenames:
 	
 				# Select just the spectrogram that is near the whistler
 				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
-				
-				dispersion[i] = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
-								
+				specOrig[str(j)] = spec
+
+				(dispersion[j], chirp) = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
+				specChirp[str(j)] = chirp								
 					
 			# Plot total energy in the passband as subplot
 			fig.add_axes([.1,.05,.8,.15])
@@ -388,15 +405,87 @@ for fileName in filenames:
 			plt.plot(tw,passBand)
 
 			ySize = [numpy.min(passBand), numpy.max(passBand)]
-			for triggerTime in trigger:
-				plt.plot([triggerTime,triggerTime],ySize,'r') 
+			for trig in triggerTime:
+				plt.plot([trig,trig],ySize,'r') 
 
 			plt.xlim(tStart, tEnd)
 
 			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion[0]))
 			
 			plt.savefig(saveName,dpi = dpiSetting)
-                        
+                       
+			# Plot zoom of the whistler with de-chirped image in a separate figure
+		
+			plt.close()
+
+			if dispersionMode:
+				
+				for j in range(len(triggerTime)):
+
+					trif = triggerTime[j]		
+
+					original = specOrig[str(j)]
+					dechirp = specChirp[str(j)]
+
+					fig = plt.figure(figsize=(imageWidth,imageHeight))
+		
+					ax1 = fig.add_axes([.1,.1,.4,.8])
+					plt.imshow(original, origin='lower',vmin = -40, vmax = -15)
+					
+					# Set plot labels
+					plt.xlabel('Time (s)')
+					plt.ylabel('Frequency (kHz)')
+		
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+	
+					# Set X and Y tick marks to be integer values
+					tStep = tw[1] - tw[0]
+					tStep = int(numpy.round(1 / tStep))/5
+					tickXloc = numpy.arange(whistlerLocation[0],whistlerLocation[1],step=tStep)
+					tickXlabel = numpy.round(10*tw[tickXloc])/10
+					fStep = fw[1] - fw[0]
+					fStep = fStep/1000
+					fStep = int(numpy.round(1 / fStep))
+					tickYloc = numpy.arange(0,len(fw),step=2*fStep)
+					tickYlabel = numpy.round(fw[tickYloc]/1000)
+					plt.xticks(tickXloc - tickXloc[0],tickXlabel)
+ 					plt.yticks(tickYloc,tickYlabel.astype(int))	
+					plt.ylim(0,find_closest(fw,freqMax*1000))
+			
+					# Aspect ratio to fill entire plot
+					ax1.set_aspect('auto')
+		
+					ax2 = fig.add_axes([.55, .1, .4, .8])
+					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
+
+					# Set X and Y tick marks to be integer values
+					tStep = tw[1] - tw[0]
+					tStep = int(numpy.round(1 / tStep))/5
+					tickXloc = numpy.arange(whistlerLocation[0],whistlerLocation[1],step=tStep)
+					tickXlabel = numpy.round(10*tw[tickXloc])/10
+					fStep = fw[1] - fw[0]
+					fStep = fStep/1000
+					fStep = int(numpy.round(1 / fStep))
+					tickYloc = numpy.arange(0,len(fw),step=2*fStep)
+					tickYlabel = numpy.round(fw[tickYloc]/1000)
+					plt.xticks(tickXloc - tickXloc[0],tickXlabel)
+ 					plt.yticks([],[])	
+					plt.ylim(0,find_closest(fw,freqMax*1000))
+			
+					# Set plot labels
+					plt.xlabel('Time (s)')
+
+					ax2.set_aspect('auto')
+	
+					# Set savename to be filename with updated time increments and the appended text
+					name = fileName.split("/")
+					name = name[-1]
+					saveName = output + name[:-6] + str(i).zfill(2) + appendText + '_dispersion' + str(j) + '.png'
+			        # Set title to give filename and sampling frequency
+#					plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
+		
+					plt.savefig(saveName,dpi = dpiSetting)
+
 		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
 			# Plot total energy in the passband as subplot
