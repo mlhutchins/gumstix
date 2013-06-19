@@ -18,7 +18,7 @@ parser.add_argument('-a','--append',default = '',type=str,metavar='append',help=
 parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
-parser.add_argument('-d','--dispersion',default = -1, metavar='dispersion',help='Calculated dispersion for specified event (given in seconds from start of file')
+parser.add_argument('-d','--dispersion',action='store_true',help='Plot chirped and de-chirped triggered whistlers.')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -32,17 +32,14 @@ appendText = args.append
 whistlerSearch = args.search
 verboseMode = args.verbose
 zoomMode = args.zoom
-dispersionStart = args.dispersion
-
-# If dispersionStart is not set than disable dispersion mode
-if dispersionStart == -1:
-	dispersionMode = False
-else:
-	dispersionMode = True
+dispersionMode = args.dispersion
 
 # Set whistler to be true if either search or dispersion mode is enabled
-if whistlerSearch or dispersionMode:
+if whistlerSearch:
 	whistler = True
+if dispersionMode:
+	whistler = True
+	whistlerSearch = True
 
 # Set hardcoded parameters
 freq = [4., 4.5]
