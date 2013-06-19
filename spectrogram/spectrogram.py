@@ -72,7 +72,7 @@ def whistler_test(SdB, freq):
 
 
 	# Set the minimum length of a whistler
-	whistlerLength = 0.025 / tStep
+	whistlerLength = 0.05 / tStep
 
 	# How large of a window to use for the pre and post whistler energy
 	window = int(numpy.round(1/tStep))
