@@ -373,28 +373,30 @@ for fileName in filenames:
 			
 		# Plot whistler search only if a whistler is detected
 		if whistler and whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
-			
-			# Get the dispersion of the triggered whistlers
-						
+		
+							
 			dispersion = numpy.zeros((len(triggerTime),1))
-			specOrig = {}
-			specChirp = {}
-			for j in range(len(triggerTime)):
-				
-				trig = triggerTime[j]
-				
-			# Get the index corresponding to +- zoomWindow around the whistler
-				whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+			if dispersionMode:	
+				# Get the dispersion of the triggered whistlers
+							
+				specOrig = {}
+				specChirp = {}
+				for j in range(len(triggerTime)):
+					
+					trig = triggerTime[j]
+					
+				# Get the index corresponding to +- zoomWindow around the whistler
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+		
+					# Cut spectrogram down to lower frequency range
+					freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
+		
+					# Select just the spectrogram that is near the whistler
+					spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
+					specOrig[str(j)] = spec
 	
-				# Cut spectrogram down to lower frequency range
-				freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
-	
-				# Select just the spectrogram that is near the whistler
-				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
-				specOrig[str(j)] = spec
-
-				(dispersion[j], chirp) = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
-				specChirp[str(j)] = chirp								
+					(dispersion[j], chirp) = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
+					specChirp[str(j)] = chirp								
 					
 			# Plot total energy in the passband as subplot
 			fig.add_axes([.1,.05,.8,.15])
