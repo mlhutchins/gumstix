@@ -18,7 +18,7 @@ parser.add_argument('-a','--append',default = '',type=str,metavar='append',help=
 parser.add_argument('-s','--search',action= 'store_true',help = 'Only output images when a whistler is detected')
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
-parser.add_argument('-d','--dispersion',action='store_true',help='Select events based on dispersion')
+parser.add_argument('-d','--dispersion',default = -1, metavar='dispersion',help='Calculated dispersion for specified event (given in seconds from start of file')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -32,7 +32,13 @@ appendText = args.append
 whistlerSearch = args.search
 verboseMode = args.verbose
 zoomMode = args.zoom
-dispersionMode = args.dispersion
+dispersionStart = args.dispersion
+
+# If dispersionStart is not set than disable dispersion mode
+if dispersionStart == -1:
+	dispersionMode = False
+else:
+	dispersionMode = True
 
 # Set whistler to be true if either search or dispersion mode is enabled
 if whistlerSearch or dispersionMode:
@@ -378,17 +384,18 @@ for fileName in filenames:
 					
 			# Plot total energy in the passband as subplot
 			fig.add_axes([.1,.05,.8,.15])
-			plt.plot(tw,numpy.sum(SdB[freqRange,:],axis=0))
+			passBand = numpy.sum(SdB[freqRange,:],axis=0)
+			plt.plot(tw,passBand)
+
+			ySize = [numpy.min(passBand), numpy.max(passBand)]
+			for triggerTime in trigger:
+				plt.plot([triggerTime,triggerTime],ySize,'r') 
 
 			plt.xlim(tStart, tEnd)
 
 			plt.title('Spectral Power: %.1f - %.1f kHz, Trigger: %.2f seconds (D = %d)' % (freq[0],freq[1],trigger[0],dispersion[0]))
 			
-			if dispersionMode:
-				if numpy.sum(dispersion > 0) > 0:
-					plt.savefig(saveName,dpi = dpiSetting)
-			else:
-				plt.savefig(saveName,dpi = dpiSetting)
+			plt.savefig(saveName,dpi = dpiSetting)
                         
 		# Plot whistler high contrast plot
 		elif whistler and not whistlerSearch:
