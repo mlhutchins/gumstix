@@ -19,6 +19,7 @@ parser.add_argument('-s','--search',action= 'store_true',help = 'Only output ima
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
 parser.add_argument('-d','--dispersion',action='store_true',help='Plot chirped and de-chirped triggered whistlers.')
+parser.add_argument('-f','--force',default = 0.0,type=float, nargs='+',help = 'Forces input times into the list of triggered whistler times')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -33,6 +34,7 @@ whistlerSearch = args.search
 verboseMode = args.verbose
 zoomMode = args.zoom
 dispersionMode = args.dispersion
+forcedTrigger = args.force
 
 # Set whistler to be true if either search or dispersion mode is enabled
 if whistlerSearch:
@@ -70,7 +72,7 @@ def whistler_test(SdB, freq):
 
 
 	# Set the minimum length of a whistler
-	whistlerLength = 0.05 / tStep
+	whistlerLength = 0.025 / tStep
 
 	# How large of a window to use for the pre and post whistler energy
 	window = int(numpy.round(1/tStep))
@@ -119,6 +121,16 @@ def whistler_test(SdB, freq):
 	# Record the trigger times
 	triggerTime = tw[whistlerTest[:,0]]
 
+
+	# Add in the forced trigger time
+	forced = forcedTrigger
+	if forcedTrigger > 0.0 and triggerTime.size > 0:
+		triggerTime = numpy.concatenate((triggerTime, forced), axis=0)
+		whistlerTest[find_closest(tw,forcedTrigger)] = True
+	elif forcedTrigger > 0.0:
+		triggerTime = forced
+		whistlerTest[find_closest(tw,forcedTrigger)] = True
+	
 	return [whistlerTest, triggerTime, freqRange]
 
 ## Function to find the best fitting dispersion for the input spectrogram
@@ -292,7 +304,6 @@ for fileName in filenames:
 		whistlerTest = test[0]
 		triggerTime = test[1]
 		freqRange = test[2]
-
 	## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
@@ -381,9 +392,9 @@ for fileName in filenames:
 							
 				specOrig = {}
 				specChirp = {}
-				for j in range(len(triggerTime)):
+				for j in range(len(trigger)):
 					
-					trig = triggerTime[j]
+					trig = trigger[j]
 					
 				# Get the index corresponding to +- zoomWindow around the whistler
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
@@ -404,7 +415,7 @@ for fileName in filenames:
 			plt.plot(tw,passBand)
 
 			ySize = [numpy.min(passBand), numpy.max(passBand)]
-			for trig in triggerTime:
+			for trig in trigger:
 				plt.plot([trig,trig],ySize,'r') 
 
 			plt.xlim(tStart, tEnd)
@@ -419,9 +430,9 @@ for fileName in filenames:
 
 			if dispersionMode:
 				
-				for j in range(len(triggerTime)):
+				for j in range(len(trigger)):
 
-					trig = triggerTime[j]		
+					trig = trigger[j]		
 
 					original = specOrig[str(j)]
 					dechirp = specChirp[str(j)]
