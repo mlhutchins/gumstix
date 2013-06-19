@@ -419,7 +419,7 @@ for fileName in filenames:
 				
 				for j in range(len(triggerTime)):
 
-					trif = triggerTime[j]		
+					trig = triggerTime[j]		
 
 					original = specOrig[str(j)]
 					dechirp = specChirp[str(j)]
@@ -451,7 +451,11 @@ for fileName in filenames:
 			
 					# Aspect ratio to fill entire plot
 					ax1.set_aspect('auto')
-		
+	
+					# Title Text
+
+					plt.title(('Trigger: %.2f seconds') % (trig))
+	
 					ax2 = fig.add_axes([.55, .1, .4, .8])
 					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
 
@@ -471,9 +475,13 @@ for fileName in filenames:
 			
 					# Set plot labels
 					plt.xlabel('Time (s)')
-
+					
 					ax2.set_aspect('auto')
-	
+				
+					# Title
+						
+					plt.title('Dispersion: %d' % (dispersion[j]))
+
 					# Set savename to be filename with updated time increments and the appended text
 					name = fileName.split("/")
 					name = name[-1]
