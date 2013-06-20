@@ -231,6 +231,31 @@ def find_dispersion(SdB, fRange):
 
 	return dispersion, chirp
 
+
+def plot_format(ax, tStart, tEnd, scale):
+	# Set plot labels
+	plt.xlabel('Time (s)')
+	plt.ylabel('Frequency (kHz)')
+	
+	# Set X and Y tick marks to be integer values
+	tStep = tw[1] - tw[0]
+	tStep = int(numpy.round(1 / tStep))/scale
+	tickXloc = numpy.arange(tStart,tEnd,step=tStep)
+	tickXlabel = numpy.round((scale*2) * tw[tickXloc])/(scale*2)
+	fStep = fw[1] - fw[0]
+	fStep = fStep/1000
+	fStep = int(numpy.round(1 / fStep))
+	tickYloc = numpy.arange(0,len(fw),step=2*fStep)
+	tickYlabel = numpy.round(fw[tickYloc]/1000)
+	plt.xticks(tickXloc - tickXloc[0],tickXlabel)
+	plt.yticks(tickYloc,tickYlabel.astype(int))
+		
+	plt.ylim(0,find_closest(fw,freqMax*1000))
+	
+	# Aspect ratio to fill entire plot
+	ax.set_aspect('auto')
+
+
 ## Process each listed file
 for fileName in filenames:
 
@@ -338,22 +363,8 @@ for fileName in filenames:
 			cbar = plt.colorbar(orientation = 'horizontal')
 			cbar.set_label('Spectral Power (dB)')
 		
-		# Set plot labels
-		plt.xlabel('Time (s)')
-		plt.ylabel('Frequency (kHz)')
-		
-		# Set X and Y tick marks to be integer values
-		tStep = tw[1] - tw[0]
-		tStep = int(numpy.round(1 / tStep))
-		tickXloc = numpy.arange(0,len(tw),step=tStep)
-		tickXlabel = numpy.round(tw[tickXloc])
-		fStep = fw[1] - fw[0]
-		fStep = fStep/1000
-		fStep = int(numpy.round(1 / fStep))
-		tickYloc = numpy.arange(0,len(fw),step=2*fStep)
-		tickYlabel = numpy.round(fw[tickYloc]/1000)
-		plt.xticks(tickXloc,tickXlabel.astype(int))
-		plt.yticks(tickYloc,tickYlabel.astype(int))
+		# Format plot
+		plot_format(ax1,0, len(tw), 1)
 		
 		# Set the spectrogram view limits
 		if zoomMode and len(trigger)>0:
@@ -361,11 +372,7 @@ for fileName in filenames:
 			plt.xlim(zoomTime[0],zoomTime[1])
 		else:
 			plt.xlim(time[0], time[1])
-		plt.ylim(0,find_closest(fw,freqMax*1000))
-		
-		# Aspect ratio to fill entire plot
-		ax1.set_aspect('auto')
-		
+					
 		# Set savename to be filename with updated time increments and the appended text
 		name = fileName.split("/")
 		name = name[-1]
@@ -429,71 +436,32 @@ for fileName in filenames:
 					original = specOrig[str(j)]
 					dechirp = specChirp[str(j)]
 
+					## Plot normal whistler
 					fig = plt.figure(figsize=(imageWidth,imageHeight))
 		
 					ax1 = fig.add_axes([.1,.1,.4,.8])
 					plt.imshow(original, origin='lower',vmin = -40, vmax = -15)
 					
-					# Set plot labels
-					plt.xlabel('Time (s)')
-					plt.ylabel('Frequency (kHz)')
-		
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
-	
-					# Set X and Y tick marks to be integer values
-					tStep = tw[1] - tw[0]
-					tStep = int(numpy.round(1 / tStep))/5
-					tickXloc = numpy.arange(whistlerLocation[0],whistlerLocation[1],step=tStep)
-					tickXlabel = numpy.round(10*tw[tickXloc])/10
-					fStep = fw[1] - fw[0]
-					fStep = fStep/1000
-					fStep = int(numpy.round(1 / fStep))
-					tickYloc = numpy.arange(0,len(fw),step=2*fStep)
-					tickYlabel = numpy.round(fw[tickYloc]/1000)
-					plt.xticks(tickXloc - tickXloc[0],tickXlabel)
- 					plt.yticks(tickYloc,tickYlabel.astype(int))	
-					plt.ylim(0,find_closest(fw,freqMax*1000))
-			
-					# Aspect ratio to fill entire plot
-					ax1.set_aspect('auto')
-	
-					# Title Text
-
+					
+					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], 5)	
 					plt.title(('Trigger: %.2f seconds') % (trig))
 	
+					## Plot de-chirped whistler
 					ax2 = fig.add_axes([.55, .1, .4, .8])
 					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
 
-					# Set X and Y tick marks to be integer values
-					tStep = tw[1] - tw[0]
-					tStep = int(numpy.round(1 / tStep))/5
-					tickXloc = numpy.arange(whistlerLocation[0],whistlerLocation[1],step=tStep)
-					tickXlabel = numpy.round(10*tw[tickXloc])/10
-					fStep = fw[1] - fw[0]
-					fStep = fStep/1000
-					fStep = int(numpy.round(1 / fStep))
-					tickYloc = numpy.arange(0,len(fw),step=2*fStep)
-					tickYlabel = numpy.round(fw[tickYloc]/1000)
-					plt.xticks(tickXloc - tickXloc[0],tickXlabel)
- 					plt.yticks([],[])	
-					plt.ylim(0,find_closest(fw,freqMax*1000))
-			
-					# Set plot labels
-					plt.xlabel('Time (s)')
-					
-					ax2.set_aspect('auto')
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 				
-					# Title
-						
+					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], 5)						
 					plt.title('Dispersion: %d' % (dispersion[j]))
 
+					## Save plot
 					# Set savename to be filename with updated time increments and the appended text
 					name = fileName.split("/")
 					name = name[-1]
 					saveName = output + name[:-6] + str(i).zfill(2) + appendText + '_dispersion' + str(j) + '.png'
-			        # Set title to give filename and sampling frequency
-#					plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
-		
+
 					plt.savefig(saveName,dpi = dpiSetting)
 
 		# Plot whistler high contrast plot
