@@ -320,14 +320,12 @@ for fileName in filenames:
 		tEnd = i + timeStep
 		time = [find_closest(tw,tStart),find_closest(tw,tEnd)]
 		
-
-        # Find trigger time of whistlers
-		if whistler and numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
-			trigger = triggerTime[numpy.logical_and(tw[time[0]] <= triggerTime, triggerTime <= tw[time[1]])]
-		else:
-			trigger = []
-
-
+        # Find trigger time of whistlers in current time window
+		trigger = []
+		for trig in triggerTime:
+			if (trig < tw[time[1]]) and (trig >= tw[time[0]]):
+				trigger.append(trig)
+		
 		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
 			ax1 = fig.add_axes([.1,.3,.8,.6])
