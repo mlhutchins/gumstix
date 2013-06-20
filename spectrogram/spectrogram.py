@@ -20,6 +20,8 @@ parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - 
 parser.add_argument('-z','--zoom',action='store_true',help = 'Save only the spectrogram within +-0.5 seconds of trigger')
 parser.add_argument('-d','--dispersion',action='store_true',help='Plot chirped and de-chirped triggered whistlers.')
 parser.add_argument('-f','--force',default = 0.0,type=float, nargs='+',help = 'Forces input times into the list of triggered whistler times')
+parser.add_argument('-df','--forceD',default = 0.0,type=float, help = 'Forced dispersion to a given value')
+parser.add_argument('-dz','--zoomWindow',default = 0.5,type=float, help = 'Window size (seconds) for calculatin dispersion')
 
 args = parser.parse_args()
 filenames = args.fileName
@@ -35,6 +37,8 @@ verboseMode = args.verbose
 zoomMode = args.zoom
 dispersionMode = args.dispersion
 forcedTrigger = args.force
+forcedDispersion = args.forceD
+zoomWindow = args.zoomWindow
 
 # Set whistler to be true if either search or dispersion mode is enabled
 if whistlerSearch:
@@ -45,7 +49,6 @@ if dispersionMode:
 
 # Set hardcoded parameters
 freq = [4., 4.5]
-zoomWindow = 0.5
 
 ## Function definitions
 
@@ -148,7 +151,8 @@ def find_dispersion(SdB, fRange):
 	fShift = fSamp * fShift
 	
 	# Generate a coarse index to shift each frequency to de-chirp it
-	Dtest = numpy.linspace(100,200,11)
+	Dtest = numpy.linspace(50,800,21)
+	dStep = Dtest[1] - Dtest[0]
 	
 	# Initialize output array
 	power = numpy.zeros((len(Dtest),spec.shape[0]))
@@ -182,7 +186,7 @@ def find_dispersion(SdB, fRange):
 			
 	## Fine dispersion calculation
 	
-	Dtest = numpy.linspace(dispersion-10,dispersion+10,21)
+	Dtest = numpy.linspace(dispersion-dStep,dispersion+dStep,31)
 	 
 	# Initialize output array
 	power = numpy.zeros((len(Dtest),spec.shape[0]))
@@ -205,7 +209,6 @@ def find_dispersion(SdB, fRange):
 			
 			power[i,:] = numpy.sum(shift,1)**4
 			
-
 	power = numpy.sum(power,axis=1)
 
 	dispersion = Dtest[power == numpy.max(power)]
@@ -215,7 +218,11 @@ def find_dispersion(SdB, fRange):
 			print 'Choosing: ' + str(dispersion[0])
 		dispersion = dispersion[0]
 			
-
+	# Force dispersion setting
+	
+	if not(forcedDispersion == 0.0):
+		dispersion = forcedDispersion
+	
 	# Get de-chirped spectra
 
 	chirp = 0. * spec.copy()
@@ -444,7 +451,7 @@ for fileName in filenames:
 					
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 					
-					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], 5)	
+					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow))	
 					plt.title(('Trigger: %.2f seconds') % (trig))
 	
 					## Plot de-chirped whistler
@@ -453,7 +460,7 @@ for fileName in filenames:
 
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 				
-					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], 5)						
+					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow))						
 					plt.title('Dispersion: %d' % (dispersion[j]))
 
 					## Save plot
