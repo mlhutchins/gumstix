@@ -228,12 +228,6 @@ def find_dispersion(SdB, fRange):
 	
 		shiftLevel = -intShift[j]
 		chirp[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
-	
-
-	#else:
-	#	if verboseMode:
-	#		print 'No Single Dispersion Found: ' + str(dispersion)
-	#	dispersion = 0
 
 	return dispersion, chirp
 
@@ -298,12 +292,13 @@ for fileName in filenames:
 	fw = Fs * Mw / Nw
 	tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
 
-	# Get whistler data
+# Get whistler data
 	if whistler:
 		test = whistler_test(SdB,freq)
 		whistlerTest = test[0]
 		triggerTime = test[1]
 		freqRange = test[2]
+		
 	## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
@@ -335,7 +330,6 @@ for fileName in filenames:
 
 		# Plot the spectrogram and set colorbar limits for whistler case
 		if whistler:
-			#ax1 = fig.add_subplot(2,1,1)
 			ax1 = fig.add_axes([.1,.3,.8,.6])
 			plt.imshow(SdB, origin='lower',vmin = -40, vmax = -15)
 		else:
