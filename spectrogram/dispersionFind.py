@@ -57,6 +57,13 @@ for fileName in filenames:
 		triggerTime = forced
 		whistlerTest[find_closest(tw,forcedTrigger)] = True
 			
+	## Format forced dispersion
+	if not (forcedDispersion == 0.0):
+		dispersionMode = True
+	else:
+		dispersionMode = False
+		forcedDispersion = [0.0]
+						
 	## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
@@ -101,7 +108,7 @@ for fileName in filenames:
 					(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
 
 					# Force dispersion setting
-					if not(forcedDispersion == 0.0):
+					if dispersionMode:
 						dispersion = forcedDispersion[k]
 					
 						# Get de-chirped spectra
