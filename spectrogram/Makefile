@@ -1,13 +1,11 @@
-DATAFILE = WB20130219003000
+DATAFILE = WB201302190030
 FFLAGS = 
 
-.PHONY: test clean
+.PHONY: clean
 
-test: $(DATAFILE).png
-	open $(DATAFILE).png
-
-$(DATAFILE).png: spectrogram.py 
-	python spectrogram.py $(DATAFILE).dat -s
+test:
+	python spectrogram.py $(DATAFILE)00.dat
+	open $(DATAFILE)*.png
 
 clean:
 	rm *png
