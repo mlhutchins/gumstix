@@ -46,16 +46,11 @@ for fileName in filenames:
 	(tw, fw, SdB) = spectrogram_fft(y, Fs)	
 
 	## Get whistler data
-	(whistlerTest, triggerTime, freqRange) = whistler_test(SdB, freq, tw, fw)
+	(triggerTime, freqRange) = whistler_test(SdB, freq, tw, fw)
 		
-	# Add in the forced trigger time
-	forced = forcedTrigger
-	if forcedTrigger > 0.0 and triggerTime.size > 0:
-		triggerTime = numpy.concatenate((triggerTime, forced), axis=0)
-		whistlerTest[find_closest(tw,forcedTrigger)] = True
-	elif forcedTrigger > 0.0:
-		triggerTime = forced
-		whistlerTest[find_closest(tw,forcedTrigger)] = True
+	# Replace the trigger time with the forced trigger time
+	if forcedTrigger > 0.0:
+		triggerTime = forcedTrigger
 				
 	## Format forced dispersion
 	if not (forcedDispersion == 0.0):
@@ -87,7 +82,8 @@ for fileName in filenames:
 				trigger.append(trig)
 		
 		# Plot whistler search only if a whistler is detected
-		if numpy.sum(whistlerTest[time[0]:time[1]+1]) > 0:
+		
+		if (trigger > tw[time[0]] and trigger < tw[time[1]]):
 						
 			for j in range(len(trigger)):
 				

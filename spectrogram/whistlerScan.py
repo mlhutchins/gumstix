@@ -45,7 +45,7 @@ for fileName in filenames:
 
 	## Get whistler data
 
-	(whistlerTest, triggerTime, freqRange) = whistler_test(SdB,freq,tw,fw)
+	(triggerTime, freqRange) = whistler_test(SdB,freq,tw,fw)
 				
 	## Plotting
 	# Number of images
@@ -89,7 +89,7 @@ for fileName in filenames:
 		plt.title(name + ', Fs: ' + str(Fs[0]/1000) + ' kHz')
 			
 		# Plot whistler search only if a whistler is detected
-		if whistlerSearch and numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
+		if whistlerSearch and ((trigger > tw[time[0]] and trigger < tw[time[1]])):
 		
 			dispersion = numpy.zeros((len(triggerTime),1))
 			if dispersionMode:	

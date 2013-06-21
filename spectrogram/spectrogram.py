@@ -77,7 +77,7 @@ def whistler_test(SdB, freq, tw, fw):
 	# Record the trigger times
 	triggerTime = tw[whistlerTest[:,0]]
 
-	return (whistlerTest, triggerTime, freqRange)
+	return (triggerTime, freqRange)
 	
 ## Dechirp the given spectra by the coefficient D
 def de_chirp(spec, D, tw, fRange):
