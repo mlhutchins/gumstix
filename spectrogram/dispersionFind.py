@@ -9,7 +9,7 @@ parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figur
 parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')
 parser.add_argument('-r','--dpi',default = 75, metavar='dpi',help = 'Set image DPI, use for adjusting file size')
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
-parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
+parser.add_argument('-v','--verbose',default = False, action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-f','--forceT',default = 0.0,type=float, nargs='+',help = 'Forces input times into the list of triggered whistler times')
 parser.add_argument('-d','--forceD',default = 0.0,type=float, nargs='+',help = 'Forced dispersion to a given value')
 parser.add_argument('-z','--zoomWindow',default = 0.5,type=float, help = 'Window size (seconds) for calculatin dispersion')
