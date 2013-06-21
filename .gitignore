@@ -1,5 +1,6 @@
 *png
 spectrogram/whistlers/*zip
+*pyc
 spectrogram/*dat
 images
 spectrogram/fullday
