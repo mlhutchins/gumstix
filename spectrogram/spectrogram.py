@@ -18,7 +18,7 @@ def find_closest(A, target):
 	return idx
 
 ## Test for Whistlers
-def whistler_test(SdB, freq):
+def whistler_test(SdB, freq, tw, fw):
 
 	# Define the time step
 	tStep = tw[1] - tw[0]
@@ -77,16 +77,6 @@ def whistler_test(SdB, freq):
 	# Record the trigger times
 	triggerTime = tw[whistlerTest[:,0]]
 
-
-	# Add in the forced trigger time
-	forced = forcedTrigger
-	if forcedTrigger > 0.0 and triggerTime.size > 0:
-		triggerTime = numpy.concatenate((triggerTime, forced), axis=0)
-		whistlerTest[find_closest(tw,forcedTrigger)] = True
-	elif forcedTrigger > 0.0:
-		triggerTime = forced
-		whistlerTest[find_closest(tw,forcedTrigger)] = True
-	
 	return (whistlerTest, triggerTime, freqRange)
 	
 ## Function to find the best fitting dispersion for the input spectrogram
@@ -192,7 +182,7 @@ def find_dispersion(SdB, fRange):
 	return dispersion, chirp
 
 
-def plot_format(ax, tStart, tEnd, scale):
+def plot_format(ax, tStart, tEnd, scale, tw, fw, freqMax):
 	# Set plot labels
 	plt.xlabel('Time (s)')
 	plt.ylabel('Frequency (kHz)')
@@ -219,7 +209,7 @@ def import_wideband(filename):
 
 	## Read in Wideband VLF Data
 
-	fid = open(fileName, 'rb')
+	fid = open(filename, 'rb')
 
 	time = numpy.fromfile(fid, dtype=numpy.dtype('<i4'), count = 1)
 	Fs = numpy.fromfile(fid, dtype=numpy.dtype('<f8'), count = 1)
@@ -315,10 +305,6 @@ if __name__ == "__main__":
 
 		(tw, fw, SdB) = spectrogram_fft(y, Fs)	
 
-# 		## Get whistler data
-# 		if whistler:
-# 			(whistlerTest, triggerTime, freqRange) = whistler_test(SdB,freq)
-# 		
 		## Plotting
 		
 		# Number of images
@@ -354,7 +340,7 @@ if __name__ == "__main__":
 				cbar.set_label('Spectral Power (dB)')
 		
 			# Format plot
-			plot_format(ax1,0, len(tw), 1)
+			plot_format(ax1,0, len(tw), 1, tw, fw, freqMax)
 		
 			# Set the spectrogram view limits
 			plt.xlim(time[0], time[1])
