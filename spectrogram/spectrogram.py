@@ -127,9 +127,6 @@ def find_dispersion(spec, fRange, tw):
 	dispersion = Dtest[power == numpy.max(power)]
 		
 	if len(dispersion) > 1:
-		if verboseMode:
-			print 'Multiple Dispersions: ' + str(dispersion)
-			print 'Choosing: ' + str(dispersion[0])
 		dispersion = dispersion[0]
 			
 	## Fine dispersion calculation
@@ -151,9 +148,6 @@ def find_dispersion(spec, fRange, tw):
 
 	dispersion = Dtest[power == numpy.max(power)]
 	if len(dispersion) > 1:
-		if verboseMode:
-			print 'Multiple Dispersions: ' + str(dispersion)
-			print 'Choosing: ' + str(dispersion[0])
 		dispersion = dispersion[0]
 			
 	# Get de-chirped spectra
