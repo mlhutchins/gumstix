@@ -56,7 +56,7 @@ for fileName in filenames:
 	elif forcedTrigger > 0.0:
 		triggerTime = forced
 		whistlerTest[find_closest(tw,forcedTrigger)] = True
-			
+				
 	## Format forced dispersion
 	if not (forcedDispersion == 0.0):
 		dispersionMode = True
@@ -83,12 +83,12 @@ for fileName in filenames:
         # Find trigger time of whistlers in current time window
 		trigger = []
 		for trig in triggerTime:
-			if (trig < tw[time[1]]) and (trig >= tw[time[0]]):
+			if (trig <= tw[time[1]]) and (trig >= tw[time[0]]):
 				trigger.append(trig)
 		
 		# Plot whistler search only if a whistler is detected
-		if numpy.sum(whistlerTest[time[0]:time[1]]) > 0:
-			
+		if numpy.sum(whistlerTest[time[0]:time[1]+1]) > 0:
+						
 			for j in range(len(trigger)):
 				
 				for k in range(len(forcedDispersion)):
@@ -130,37 +130,31 @@ for fileName in filenames:
 					# Shift display window to track de-chirped whistler (follows 2kHz line)
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]			
 					offset = chirp_offset(dispersion, tw)
+					if -offset > whistlerLocation[0]:
+						wrap = True
+					else:
+						wrap = False
 					whistlerLocation = (whistlerLocation + offset) % len(tw)														
 						
 					spec = SdB[freqCut[0]:freqCut[1],:]
 						
-					# Double variables in case of wraparound (location is before 0s)
-					if whistlerLocation[0] > whistlerLocation[1]:
-						# Double spectrogram and time base
-						spec = numpy.concatenate((spec, spec), axis=0)
-						twChirp = numpy.concatenate((tw,tw),axis=0)
-						
-						# Increase the second location by the length of the time window	
-						whistlerLocation[1] = whistlerLocation[1] + len(tw)
-		
-					else:
-						twChirp = tw
-						
 					# Get de-chirped spectra
-					dechirp = de_chirp(spec, dispersion, twChirp, fRange)
+					dechirp = de_chirp(spec, dispersion, tw, fRange)
 	
 					# Plot de-chirped tracked whistler
 					ax2 = fig.add_axes([.55, .1, .4, .8])
 					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
 		
-					plot_format(ax2, 0, len(twChirp), \
-								int(2.5 / zoomWindow), twChirp, fw, freqMax)						
+					plot_format(ax2, 0, len(tw), \
+								int(2.5 / zoomWindow), tw, fw, freqMax)						
 					plt.title('Dispersion: %d' % (dispersion))
 					plt.xlim(int(whistlerLocation[0]), int(whistlerLocation[1]))
 					
 					#Remove y-axis label
 					plt.ylabel('')
-					
+																				
+					if wrap:
+						plt.xlabel('Time (s) \n From Start of Previous Record')
 
 					## Save plot
 					# Set savename to be filename with updated time increments and the appended text
