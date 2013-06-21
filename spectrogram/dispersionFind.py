@@ -52,64 +52,28 @@ for fileName in filenames:
 	if verboseMode:
 		print fileName
 
-## Read in Wideband VLF Data
+	## Import Wideband
 
-	fid = open(fileName, 'rb')
-	
-	time = numpy.fromfile(fid, dtype=numpy.dtype('<i4'), count = 1)
-	Fs = numpy.fromfile(fid, dtype=numpy.dtype('<f8'), count = 1)
-	offset = numpy.fromfile(fid, dtype=numpy.dtype('<f8'), count = 1)
-	y = numpy.fromfile(fid, dtype=numpy.dtype('<i2'))
+	(t, y, Fs) = import_wideband(fileName)
 
-## Normalize to soundcard units and switch to float
-	y = y.astype(numpy.float)
-	y = y/32768
+	## Spectrogram ##
 
-## Make the time base
-
-	t = numpy.arange(0.0,len(y))
-	t = t + offset
-	t = t/Fs
-	
-## Spectrogram ##
-
-	Nw = 2**10 # Hanning window length
-	Ny = len(y) # Sample length
-
-# Create Hanning window
-	j = numpy.arange(1.0,Nw+1)
-	w = 0.5 * (1 - numpy.cos(2*numpy.pi*(j-1)/Nw))
-	varw = 3./8.
-
-# Window the data
-	nwinf = numpy.floor(Ny/Nw)
-	nwinh = nwinf - 1
-	nwin = nwinf + nwinh
-
-# Fill in the windows array
-	yw = numpy.zeros((Nw,nwin))
-	yw[:,0:nwin:2] = y[:nwinf*Nw].reshape(Nw,nwinf,order='F').copy()
-	yw[:,1:(nwin-1):2] = y[(Nw/2):(nwinf-0.5)*Nw].reshape(Nw,nwinh,order='F').copy()
-
-# Taper the data
-	yt = yw * numpy.tile(w,(nwin,1)).T
-
-# DFT of the data
-	ythat = numpy.zeros(yt.shape)
-	ythat = ythat + 0j
-	for i in range(yt.shape[1]):
-		ythat[:,i] = numpy.fft.fft(yt[:,i])
-	S = (numpy.absolute(ythat)**2)/varw
-	S = S[0:Nw/2,:]
-	SdB = 10*numpy.log10(S)
-	Mw = numpy.arange(0,Nw/2)
-	fw = Fs * Mw / Nw
-	tw = numpy.arange(1,nwin+1) * 0.5 * Nw/Fs
+	(tw, fw, SdB) = spectrogram_fft(y, Fs)	
 
 # Get whistler data
 	if whistler:
 		(whistlerTest, triggerTime, freqRange) = whistler_test(SdB,freq)
 		
+
+	# Add in the forced trigger time
+	forced = forcedTrigger
+	if forcedTrigger > 0.0 and triggerTime.size > 0:
+		triggerTime = numpy.concatenate((triggerTime, forced), axis=0)
+		whistlerTest[find_closest(tw,forcedTrigger)] = True
+	elif forcedTrigger > 0.0:
+		triggerTime = forced
+		whistlerTest[find_closest(tw,forcedTrigger)] = True
+			
 	## Plotting
 	# Number of images
 	imageSteps = numpy.arange(0,int(numpy.floor(tw[-1])),timeStep)
@@ -150,7 +114,7 @@ for fileName in filenames:
 			cbar.set_label('Spectral Power (dB)')
 		
 		# Format plot
-		plot_format(ax1,0, len(tw), 1)
+		plot_format(ax1,0, len(tw), 1, tw, fw, freqMax)
 		
 		# Set the spectrogram view limits
 		if zoomMode and len(trigger)>0:
@@ -230,7 +194,7 @@ for fileName in filenames:
 					
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 					
-					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow))	
+					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)	
 					plt.title(('Trigger: %.2f seconds') % (trig))
 	
 					## Plot de-chirped whistler
@@ -239,7 +203,7 @@ for fileName in filenames:
 
 					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 				
-					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow))						
+					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)						
 					plt.title('Dispersion: %d' % (dispersion[j]))
 
 					## Save plot
