@@ -93,48 +93,74 @@ for fileName in filenames:
 				
 				for k in range(len(forcedDispersion)):
 				
+					## Parameters for both plots
 					trig = trigger[j]
-				
-					# Get the index corresponding to +- zoomWindow around the whistler
-					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
-	
+					
 					# Cut spectrogram down to lower frequency range
 					freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
+					fRange = fw[freqCut[0]:freqCut[1]]
+
+					# Create figure
+					fig = plt.figure(figsize=(imageWidth,imageHeight))
+					
+					## Whistler Plot (Original)
+					
+					# Get the index corresponding to +- zoomWindow around the whistler
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 	
 					# Select just the spectrogram that is near the whistler
 					spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
 
-					fRange = fw[freqCut[0]:freqCut[1]]
-					(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
-
-					# Force dispersion setting
-					if dispersionMode:
-						dispersion = forcedDispersion[k]
-					
-						# Get de-chirped spectra
-						dechirp = de_chirp(spec, dispersion, tw, fRange)
-	
-					## Plot normal whistler
-					fig = plt.figure(figsize=(imageWidth,imageHeight))
-	
+					# Plot whistler
 					ax1 = fig.add_axes([.1,.1,.4,.8])
 					plt.imshow(spec, origin='lower',vmin = -40, vmax = -15)
 								
 					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)	
 					plt.title(('Trigger: %.2f seconds') % (trig))
 
-					## Plot de-chirped whistler
+					## Dechirped Whistler Plot
+					
+					# Get the dispersion
+					(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
+
+					# Force dispersion setting
+					if dispersionMode:
+						dispersion = forcedDispersion[k]
+					
+					# Shift display window to track de-chirped whistler (follows 2kHz line)
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]			
+					offset = chirp_offset(dispersion, tw)
+					whistlerLocation = (whistlerLocation + offset) % len(tw)														
+						
+					spec = SdB[freqCut[0]:freqCut[1],:]
+						
+					# Double variables in case of wraparound (location is before 0s)
+					if whistlerLocation[0] > whistlerLocation[1]:
+						# Double spectrogram and time base
+						spec = numpy.concatenate((spec, spec), axis=0)
+						twChirp = numpy.concatenate((tw,tw),axis=0)
+						
+						# Increase the second location by the length of the time window	
+						whistlerLocation[1] = whistlerLocation[1] + len(tw)
+		
+					else:
+						twChirp = tw
+						
+					# Get de-chirped spectra
+					dechirp = de_chirp(spec, dispersion, twChirp, fRange)
+	
+					# Plot de-chirped tracked whistler
 					ax2 = fig.add_axes([.55, .1, .4, .8])
 					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
-
-					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
-			
-					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)						
+		
+					plot_format(ax2, 0, len(twChirp), \
+								int(2.5 / zoomWindow), twChirp, fw, freqMax)						
 					plt.title('Dispersion: %d' % (dispersion))
-
+					plt.xlim(int(whistlerLocation[0]), int(whistlerLocation[1]))
+					
 					#Remove y-axis label
 					plt.ylabel('')
-
+					
 
 					## Save plot
 					# Set savename to be filename with updated time increments and the appended text

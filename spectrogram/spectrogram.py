@@ -103,6 +103,17 @@ def de_chirp(spec, D, tw, fRange):
 		
 	return shift
 	
+## Calculate the amount to shift the dispersion plotting window based on the dispersion amount
+def chirp_offset(D, tw):
+
+	fShift = 1. / numpy.sqrt(5000)
+	fSamp = 1./(tw[1] - tw[0])
+	fShift = fSamp * fShift
+	
+	offset = -numpy.ceil(0.5 * D * fShift)
+	
+	return offset
+	
 ## Function to find the best fitting dispersion for the input spectrogram
 def find_dispersion(spec, fRange, tw):
 
@@ -168,8 +179,10 @@ def plot_format(ax, tStart, tEnd, scale, tw, fw, freqMax):
 	# Set X and Y tick marks to be integer values
 	tStep = tw[2] - tw[1]
 	tStep = int(numpy.round(1 / tStep))/scale
+		
 	tickXloc = numpy.arange(tStart,tEnd,step=tStep)
 	tickXlabel = numpy.round((scale*2) * tw[tickXloc])/(scale*2)
+
 	fStep = fw[2] - fw[1]
 	fStep = fStep/1000
 	fStep = int(numpy.round(1 / fStep))
