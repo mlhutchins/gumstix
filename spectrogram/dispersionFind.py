@@ -11,7 +11,7 @@ parser.add_argument('-r','--dpi',default = 75, metavar='dpi',help = 'Set image D
 parser.add_argument('-a','--append',default = '',type=str,metavar='append',help='Text to append to output filenames')
 parser.add_argument('-v','--verbose',action='store_true',help = 'Verbose mode - list files being processed')
 parser.add_argument('-f','--forceT',default = 0.0,type=float, nargs='+',help = 'Forces input times into the list of triggered whistler times')
-parser.add_argument('-d','--forceD',default = 0.0,type=float, help = 'Forced dispersion to a given value')
+parser.add_argument('-d','--forceD',default = 0.0,type=float, nargs='+',help = 'Forced dispersion to a given value')
 parser.add_argument('-z','--zoomWindow',default = 0.5,type=float, help = 'Window size (seconds) for calculatin dispersion')
 
 args = parser.parse_args()
@@ -84,52 +84,61 @@ for fileName in filenames:
 			
 			for j in range(len(trigger)):
 				
-				trig = trigger[j]
+				for k in range(len(forcedDispersion)):
 				
-				# Get the index corresponding to +- zoomWindow around the whistler
-				whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+					trig = trigger[j]
+				
+					# Get the index corresponding to +- zoomWindow around the whistler
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 	
-				# Cut spectrogram down to lower frequency range
-				freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
+					# Cut spectrogram down to lower frequency range
+					freqCut = [find_closest(fw,0),find_closest(fw,13*1000)]
 	
-				# Select just the spectrogram that is near the whistler
-				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
+					# Select just the spectrogram that is near the whistler
+					spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
 
-				fRange = fw[freqCut[0]:freqCut[1]]
-				(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
+					fRange = fw[freqCut[0]:freqCut[1]]
+					(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
 
-				# Force dispersion setting
-				if not(forcedDispersion == 0.0):
-					D = forcedDispersion
+					# Force dispersion setting
+					if not(forcedDispersion == 0.0):
+						dispersion = forcedDispersion[k]
 					
-					# Get de-chirped spectra
-					dechirp = dechirp(spec, D, tw, fRange)
+						# Get de-chirped spectra
+						dechirp = de_chirp(spec, dispersion, tw, fRange)
 	
-				## Plot normal whistler
-				fig = plt.figure(figsize=(imageWidth,imageHeight))
+					## Plot normal whistler
+					fig = plt.figure(figsize=(imageWidth,imageHeight))
 	
-				ax1 = fig.add_axes([.1,.1,.4,.8])
-				plt.imshow(spec, origin='lower',vmin = -40, vmax = -15)
+					ax1 = fig.add_axes([.1,.1,.4,.8])
+					plt.imshow(spec, origin='lower',vmin = -40, vmax = -15)
 								
-				plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)	
-				plt.title(('Trigger: %.2f seconds') % (trig))
+					plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)	
+					plt.title(('Trigger: %.2f seconds') % (trig))
 
-				## Plot de-chirped whistler
-				ax2 = fig.add_axes([.55, .1, .4, .8])
-				plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
+					## Plot de-chirped whistler
+					ax2 = fig.add_axes([.55, .1, .4, .8])
+					plt.imshow(dechirp, origin = 'lower', vmin = -40, vmax = -15)
 
-				whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
+					whistlerLocation = [find_closest(tw,trig - zoomWindow),find_closest(tw,trig + zoomWindow)]
 			
-				plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)						
-				plt.title('Dispersion: %d' % (dispersion))
+					plot_format(ax2, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)						
+					plt.title('Dispersion: %d' % (dispersion))
 
-				## Save plot
-				# Set savename to be filename with updated time increments and the appended text
-				name = fileName.split("/")
-				name = name[-1]
-				saveName = output + name[:-6] + str(i).zfill(2) + appendText + '_dispersion' + str(j) + '.png'
+					#Remove y-axis label
+					plt.ylabel('')
 
-				plt.savefig(saveName,dpi = dpiSetting)
+
+					## Save plot
+					# Set savename to be filename with updated time increments and the appended text
+					name = fileName.split("/")
+					name = name[-1]
+					if dispersionMode:
+						saveName = output + name[:-6] + str(i).zfill(2) + appendText + '_dispersion' + str(j) + '_' + str(k) + '.png'
+					else:
+						saveName = output + name[:-6] + str(i).zfill(2) + appendText + '_dispersion' + str(j) + '.png'
+
+					plt.savefig(saveName,dpi = dpiSetting)
 
 		
 		# Close the plot

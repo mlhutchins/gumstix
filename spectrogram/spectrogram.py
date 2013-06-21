@@ -80,7 +80,7 @@ def whistler_test(SdB, freq, tw, fw):
 	return (whistlerTest, triggerTime, freqRange)
 	
 ## Dechirp the given spectra by the coefficient D
-def dechirp(spec, D, tw, fRange):
+def de_chirp(spec, D, tw, fRange):
 
 	# Get the left shift-vector in seconds for a D = 1 constant
 	
@@ -119,7 +119,7 @@ def find_dispersion(spec, fRange, tw):
 			
 		D = Dtest[i]
 		
-		shift = dechirp(spec, D, tw, fRange)
+		shift = de_chirp(spec, D, tw, fRange)
 		
 		power[i,:] = numpy.sum(shift,1)**4
 		
@@ -143,7 +143,7 @@ def find_dispersion(spec, fRange, tw):
 					
 		D = Dtest[i]
 		
-		shift = dechirp(spec, D, tw, fRange)
+		shift = de_chirp(spec, D, tw, fRange)
 			
 		power[i,:] = numpy.sum(shift,1)**4
 			
@@ -161,7 +161,7 @@ def find_dispersion(spec, fRange, tw):
 	chirp = 0. * spec.copy()
 	D = dispersion
 	
-	chirp = dechirp(spec, D, tw, fRange)
+	chirp = de_chirp(spec, D, tw, fRange)
 
 	return dispersion, chirp
 
