@@ -271,7 +271,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
 	parser.add_argument('fileName', metavar='filename', type=str, nargs='+', help = 'Name (list) of wideband file(s)')
 	parser.add_argument('-t','--time', metavar = 'time', default = 15, help = 'Time length of each plot (seconds)')
-	parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to whistler search plots')
+	parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to high contrast style whistler search plots')
 	parser.add_argument('-o','--output', action='store', metavar='output', default='',type=str,help = 'Output directory')
 	parser.add_argument('-x','--sizeX', default = 7.5, metavar='width',help = 'Figure width in inches (<4" not recommended)')
 	parser.add_argument('-y','--sizeY', default = 7.5, metavar='height',help = 'Figure height in inches (<4" not recommended)')

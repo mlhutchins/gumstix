@@ -1,7 +1,7 @@
 from spectrogram import *
 
 # Setup the structure for the input options and arguments
-parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
+parser = argparse.ArgumentParser(description='Generate dispersion plots for triggered or manual whistler locations in VLF wideband WB.dat files')
 parser.add_argument('fileName', metavar='filename', type=str, nargs='+', help = 'Name (list) of wideband file(s)')
 parser.add_argument('-t','--time', metavar = 'time', default = 15, help = 'Time length of each plot (seconds)')
 parser.add_argument('-w','--whistler',action = 'store_true', help = 'Switch to whistler search mode')

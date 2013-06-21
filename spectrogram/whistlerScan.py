@@ -1,7 +1,7 @@
 from spectrogram import *
 
 # Setup the structure for the input options and arguments
-parser = argparse.ArgumentParser(description='Generate spectrograms from wideband WB.dat files')
+parser = argparse.ArgumentParser(description='Searches for whistlers in wideband WB.dat files')
 parser.add_argument('fileName', metavar='filename', type=str, nargs='+', help = 'Name (list) of wideband file(s)')
 parser.add_argument('-t','--time', metavar = 'time', default = 15, help = 'Time length of each plot (seconds)')
 parser.add_argument('-o','--output', action='store', metavar='output', default='',type=str,help = 'Output directory')
