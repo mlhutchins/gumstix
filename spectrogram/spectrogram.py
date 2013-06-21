@@ -79,11 +79,9 @@ def whistler_test(SdB, freq, tw, fw):
 
 	return (whistlerTest, triggerTime, freqRange)
 	
-## Function to find the best fitting dispersion for the input spectrogram
-def find_dispersion(SdB, fRange):
+## Dechirp the given spectra by the coefficient D
+def dechirp(spec, D, tw, fRange):
 
-	## Crude dispersion calculation
-	
 	# Get the left shift-vector in seconds for a D = 1 constant
 	
 	fRange[0] = fRange[1]
@@ -93,6 +91,23 @@ def find_dispersion(SdB, fRange):
 	fSamp = 1./(tw[1]-tw[0])
 	fShift = fSamp * fShift
 	
+	intShift = numpy.ceil(0.5 * D * fShift);
+
+	shift = 0. * spec.copy()
+
+	# Shift each row of spec
+	for j in range(len(fRange)):
+		
+		shiftLevel = -intShift[j]
+		shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));	
+		
+	return shift
+	
+## Function to find the best fitting dispersion for the input spectrogram
+def find_dispersion(spec, fRange, tw):
+
+	## Crude dispersion calculation
+		
 	# Generate a coarse index to shift each frequency to de-chirp it
 	Dtest = numpy.linspace(50,800,21)
 	dStep = Dtest[1] - Dtest[0]
@@ -101,22 +116,12 @@ def find_dispersion(SdB, fRange):
 	power = numpy.zeros((len(Dtest),spec.shape[0]))
 	
 	for i in range(len(Dtest)):
-	
-		shift = 0. * spec.copy()
-		
+			
 		D = Dtest[i]
 		
-		intShift = numpy.ceil(0.5 * D * fShift);
-
-		# Shift each row of spec
-		for j in range(len(fRange)):
-			
-			shiftLevel = -intShift[j]
-			shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
-			
-			# Get total power in each column
-			
-			power[i,:] = numpy.sum(shift,1)**4
+		shift = dechirp(spec, D, tw, fRange)
+		
+		power[i,:] = numpy.sum(shift,1)**4
 		
 	power = numpy.sum(power,axis=1)
 	dispersion = Dtest[power == numpy.max(power)]
@@ -135,22 +140,12 @@ def find_dispersion(SdB, fRange):
 	power = numpy.zeros((len(Dtest),spec.shape[0]))
 		
 	for i in range(len(Dtest)):
-			
-		shift = 0. * spec.copy()
-		
+					
 		D = Dtest[i]
 		
-		intShift = numpy.ceil(0.5 * D * fShift);
-
-		# Shift each row of spec
-		for j in range(len(fRange)):
+		shift = dechirp(spec, D, tw, fRange)
 			
-			shiftLevel = -intShift[j]
-			shift[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
-			
-			# Get total power in each column
-			
-			power[i,:] = numpy.sum(shift,1)**4
+		power[i,:] = numpy.sum(shift,1)**4
 			
 	power = numpy.sum(power,axis=1)
 
@@ -161,23 +156,12 @@ def find_dispersion(SdB, fRange):
 			print 'Choosing: ' + str(dispersion[0])
 		dispersion = dispersion[0]
 			
-	# Force dispersion setting
-	
-	if not(forcedDispersion == 0.0):
-		dispersion = forcedDispersion
-	
 	# Get de-chirped spectra
 
 	chirp = 0. * spec.copy()
 	D = dispersion
-
-	intShift = numpy.ceil(0.5 * D * fShift);
-
-	# Shift each row of spec
-	for j in range(len(fRange)):
 	
-		shiftLevel = -intShift[j]
-		chirp[j,:] = numpy.roll(spec[j,:],int(shiftLevel));
+	chirp = dechirp(spec, D, tw, fRange)
 
 	return dispersion, chirp
 
@@ -188,11 +172,11 @@ def plot_format(ax, tStart, tEnd, scale, tw, fw, freqMax):
 	plt.ylabel('Frequency (kHz)')
 	
 	# Set X and Y tick marks to be integer values
-	tStep = tw[1] - tw[0]
+	tStep = tw[2] - tw[1]
 	tStep = int(numpy.round(1 / tStep))/scale
 	tickXloc = numpy.arange(tStart,tEnd,step=tStep)
 	tickXlabel = numpy.round((scale*2) * tw[tickXloc])/(scale*2)
-	fStep = fw[1] - fw[0]
+	fStep = fw[2] - fw[1]
 	fStep = fStep/1000
 	fStep = int(numpy.round(1 / fStep))
 	tickYloc = numpy.arange(0,len(fw),step=2*fStep)

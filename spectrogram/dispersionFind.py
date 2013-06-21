@@ -46,7 +46,7 @@ for fileName in filenames:
 	(tw, fw, SdB) = spectrogram_fft(y, Fs)	
 
 	## Get whistler data
-	(whistlerTest, triggerTime, freqRange) = whistler_test(SdB,freq)
+	(whistlerTest, triggerTime, freqRange) = whistler_test(SdB, freq, tw, fw)
 		
 	# Add in the forced trigger time
 	forced = forcedTrigger
@@ -94,16 +94,22 @@ for fileName in filenames:
 	
 				# Select just the spectrogram that is near the whistler
 				spec = SdB[freqCut[0]:freqCut[1],whistlerLocation[0]:whistlerLocation[1]]
-				specOrig = spec
 
-				(dispersion, chirp) = find_dispersion(spec,fw[freqCut[0]:freqCut[1]].copy())
-				specChirp = chirp								
-				
+				fRange = fw[freqCut[0]:freqCut[1]]
+				(dispersion, dechirp) = find_dispersion(spec,fRange, tw)
+
+				# Force dispersion setting
+				if not(forcedDispersion == 0.0):
+					D = forcedDispersion
+					
+					# Get de-chirped spectra
+					dechirp = dechirp(spec, D, tw, fRange)
+	
 				## Plot normal whistler
 				fig = plt.figure(figsize=(imageWidth,imageHeight))
 	
 				ax1 = fig.add_axes([.1,.1,.4,.8])
-				plt.imshow(original, origin='lower',vmin = -40, vmax = -15)
+				plt.imshow(spec, origin='lower',vmin = -40, vmax = -15)
 								
 				plot_format(ax1, whistlerLocation[0], whistlerLocation[1], int(2.5 / zoomWindow), tw, fw, freqMax)	
 				plt.title(('Trigger: %.2f seconds') % (trig))
