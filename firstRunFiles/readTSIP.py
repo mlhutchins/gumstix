@@ -137,7 +137,7 @@ def printPrimary(primTiming):
 	return statement1
 
 
-def printSecondary(secTiming)
+def printSecondary(secTiming):
 	
 			# Extract parameters of interest
 	fix=secTiming[12*2-2:12*2]
@@ -153,8 +153,9 @@ def printSecondary(secTiming)
 	
 	# Select current alerts
 	alerts[:]=[];
-	for i in range(0,13):
-		if ((alarms[i]=='1') and (alertList[i] not in 'Not used')):
+	alarmLength = len(alarms) 
+	for i in range(alarmLength):
+		if ((alarms[alarmLength - i - 1]=='1') and (alertList[i] not in 'Not used')):
 			alerts.append(alertList[i])
 
 	# Convert from hex to floating point decimal
@@ -182,7 +183,7 @@ def printSecondary(secTiming)
 	else:
 		statement2c = ''
 
-	return (statement2a, statement2b, statement2v)
+	return (statement2a, statement2b, statement2c)
 
 def printTrack(trackline):
 	if (len(trackline)>2):
@@ -191,7 +192,7 @@ def printTrack(trackline):
 		track = '-1'
 
 	statement3 = 'Satellites tracked: ' + track
-
+	return statement3
 
 # Initialize variables
 removeIndex=[]
@@ -226,7 +227,7 @@ while True:
 		# Extract TSIP messagess
 		primTiming = extractMessage('108fab',hexline)
 		secTiming = extractMessage('108fac',hexline)
-		satLine = extractMessage('1047',hexline)
+#		satLine = extractMessage('1047',hexline)
 		trackline = extractMessage('106d',hexline)		
 
 #		print 'Primary Timing: ' + primTiming
@@ -251,7 +252,7 @@ while True:
 
 		# Report the number of satellites locked and available
 
-		statement3 = printTrack(tackline)
+		statement3 = printTrack(trackline)
 
 		# Print out generated messages
 
