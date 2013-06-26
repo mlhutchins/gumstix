@@ -14,6 +14,15 @@ chmod 0440 sferix_sudo
 cp sferix_sudo /etc/sudoers.d/
 rm sferix_sudo
 
+# Setup Host Account
+echo 'Creating host account'
+adduser host
+touch host_sudo
+echo 'sferix ALL=(ALL) ALL' >> host_sudo
+chmod 0440 host_sudo
+cp host_sudo /etc/sudoers.d/
+rm host_sudo
+
 # Set user path
 echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
 echo export PATH >> /home/sferix/.profile
@@ -27,6 +36,7 @@ cat ${DIR}.bashrc >> /home/sferix/.profile
 cp ${DIR}.bashrc ~/.profile
 cp ${DIR}.vimrc ~/
 cp ${DIR}.vimrc /home/sferix/
+cp ${DIR}.vimrc /home/host/
 cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
@@ -36,9 +46,12 @@ cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkSetup.sh /home/sferix/
+cp ${DIR}networkSetup.sh /home/host/
 cp ${DIR}asound.state /etc/
 cp ${DIR}asound.state /home/sferix/asound.state.default
 cp ${DIR}asound.txt /home/sferix/asound.txt
+cp ${DIR}asound.state /home/host/asound.state.default
+cp ${DIR}asound.txt /home/host/asound.txt
 cp ${DIR}ntpd /etc/init.d/
 
 # Install toga
@@ -58,6 +71,10 @@ chown -R sferix /media/ram/sferics
 chown -R sferix /media/ram/public_html
 chown sferix /home/sferix/sferics/sferics.log
 
+# Set host access to public_html_static
+chmod a+w /home/sferix/public_html_static
+ln -s /home/sferix/public_html_static /home/host_/public_html_static
+
 # Create folders at startup
 cp ${DIR}ramdisk.sh /etc/init.d/
 ln -s /etc/init.d/ramdisk.sh /etc/rc5.d/S90ramdisk
@@ -72,6 +89,12 @@ cp ${DIR}readTSIP.py /home/sferix/gps
 cp ${DIR}sendTSIP.py /home/sferix/gps
 cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
+
+mkdir /home/host/gps
+cp ${DIR}readTSIP.py /home/host/gps
+#cp ${DIR}sendTSIP.py /home/host/gps
+cp ${DIR}startGPSD.py /home/host/gps
+chown -R host /home/host/gps
 
 # Install sferix crontab
 crontab -u sferix ${DIR}crontab_install
@@ -100,6 +123,13 @@ chown sferix /home/sferix/preamp
 chown sferix /home/sferix/preamp/*
 cp ${DIR}preamp.sh /etc/init.d/
 ln -s /etc/init.d/preamp.sh /etc/rc5.d/S90preamp
+
+# Install preamp scripts for host
+mkdir /home/host/preamp
+cp ${DIR}preamp* /home/host/preamp/
+chown host/home/host/preamp
+chown host/home/host/preamp/*
+
 
 # Setup wideband and R-files folders
 mkdir /home/sferix/R-files
