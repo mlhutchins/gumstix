@@ -26,16 +26,16 @@ ser = serial.Serial(
         bytesize=serial.EIGHTBITS
 )
 
-messages={'01':'101e4b1003'.decode('hex'),
-		'02':'101e0e1003'.decode('hex'),
-        '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003'.decode('hex'),
-             '108e4e041003'.decode('hex'),
-             '108e20001003'.decode('hex'),
-             '108e21001003'.decode('hex'),
-             '108e230010031035120200201003'.decode('hex')],
-		'06':'107a0001000000781003'.decode('hex'),
+messages={'01':'101e4b1003'.decode('hex'), # Hard Reset
+		'02':'101e0e1003'.decode('hex'), # Warm Reset
+        '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003'.decode('hex'), # 
+             '108e4e041003'.decode('hex'), #
+             '108e20001003'.decode('hex'), #
+             '108e21001003'.decode('hex'), #
+             '108e230010031035120200201003'.decode('hex')], #
+		'06':'107a0001000000781003'.decode('hex'), #Set NMEA
 		'07':'10bc000606030000000204001003'.decode('hex'),	
-		'50':'108e261003'.decode('hex'),
+		'50':'108e261003'.decode('hex'), # Write to ROM
 		'99':'Exit'
 }
 
