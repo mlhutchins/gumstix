@@ -1,31 +1,16 @@
 # Python program to send Resolution T serial TSIP messages
 
 # Import modules
-import serial
-import time
-import binhex
-import struct
-import os
-import sys
+import tsip
 
+serialPort = '/dev/ttyO0'
 
-gpsd = os.popen('ps ax | grep gpsd').read()
-if '/dev/ttyO0' in gpsd:
-        gpsd_check = raw_input('Terminate GPSD? (y/n)')
-        if 'y' in gpsd_check:
-                os.system('killall gpsd')
-        else:   
-                sys.exit('Serial port in use by gpsd')
+kill_gpsd(serialPort)
 
 # Configure serial connection
-ser = serial.Serial(
-        port='/dev/ttyO0',
-        baudrate=9600,
-        parity=serial.PARITY_ODD,
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS
-)
+ser = setup_serial(serialPort)
 
+# Messages to send
 messages={'01':'101e4b1003'.decode('hex'), # Hard Reset
 		'02':'101e0e1003'.decode('hex'), # Warm Reset
         '03':['10bb00070204ff3db2b8c2408000004140000040c00000dd01ffffffffffffffffffffffffffffffffff1003'.decode('hex'), # 
@@ -72,6 +57,4 @@ while True:
 			ser.write(messages[result])
 	else:
 		ser.write(messages[result])
-
-
 
