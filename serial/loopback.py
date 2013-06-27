@@ -7,10 +7,15 @@ ser = setup_serial(serialPort)
 while True:
 	
 	line = ser.read(ser.inWaiting())
+	print 'Raw Receive :' + str(line)
 	line.encode('hex')
-	print 'Received: ' + line
+	print 'Received: ' + line.encode('hex')
 
 	message = raw_input('Message: ')
-	ser.write(message)
+	if message == 'exit':
+		break
+	messageHex = message.decode('hex')
+	print 'Sending :' + str(messageHex)
+	ser.write(messageHex)
 
 	time.sleep(0.1)
