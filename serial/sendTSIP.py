@@ -1,7 +1,7 @@
 # Python program to send Resolution T serial TSIP messages
 
 # Import modules
-import tsip
+from tsip import *
 
 serialPort = '/dev/ttyO0'
 

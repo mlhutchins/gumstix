@@ -1,7 +1,7 @@
 # Python program to read Resolution T serial TSIP messages
 
 # Import modules
-import tsip
+from tsip import *
 
 # Pick serial port
 serialPort = '/dev/ttyO0'
