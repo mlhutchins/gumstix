@@ -33,6 +33,7 @@ cp firstRunFiles/interfaces $NET
 echo 'Copying firstRun script and files'
 # cp firstRun.sh /media/rootfs/home/root/
 cp -r firstRunFiles /media/rootfs/home/root/
+cp serial/* /media/rootfs/home/firstRunFiles/
 
 # Unmount
 echo 'Unmounting microSD card'
