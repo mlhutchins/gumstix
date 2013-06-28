@@ -152,7 +152,7 @@ def printSecondary(secTiming):
 	alarmLength = len(alarms) 
 	for i in range(alarmLength):
 		if ((alarms[alarmLength - i - 1]=='1') and (alertList[i] not in 'Not used')):
-			alerts.append(alertList[i])
+			alerts.append(alertList[i - 1])
 
 	# Convert from hex to floating point decimal
 	temp=struct.unpack('!f',hexTemp.decode('hex'))
