@@ -130,10 +130,10 @@ def printSecondary(secTiming):
 	
 	# Define GPS Alert Status
 	alerts=[]
-	alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites',
-		'Not used','Survey in progress','No stored position','Leap second pending',
-		'In test mode','Position is questionable','Not used','Almanac not complete',
-		'PPS was not generated']
+		alertList = ['PPS was not generated', 'Almanac not complete', ' ',
+			'Position is questionable', 'In test mode', 'Leap second pending',
+			'No stored position', 'Survey in progress',' ',
+			'Not tracking satellites', 'Antenna shorted', 'Antenna open', ' ']	
 
 	# Extract parameters of interest
 	fix=secTiming[12*2-2:12*2]
@@ -149,10 +149,10 @@ def printSecondary(secTiming):
 	
 	# Select current alerts
 	alerts[:]=[];
-	alarmLength = len(alarms) 
+	alarmLength = len(alarms)
 	for i in range(alarmLength):
-		if ((alarms[alarmLength - i - 1]=='1') and (alertList[i] not in 'Not used')):
-			alerts.append(alertList[i - 1])
+		if alarms[i] == '1':
+			alerts.append(alertList[i])
 
 	# Convert from hex to floating point decimal
 	temp=struct.unpack('!f',hexTemp.decode('hex'))
