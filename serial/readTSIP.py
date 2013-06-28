@@ -18,41 +18,9 @@ ser = setup_serial(serialPort)
 # Open log file
 filepath='/home/sferix/public_html/gps.log'
 
-# List of possible alerts
-alerts=[]
-alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites',
-		'Not used','Survey in progress','No stored position','Leap second pending',
-		'In test mode','Position is questionable','Not used','Almanac not complete',
-		'PPS was not generated']
-
-# GPS Status
-gpsStatus={'00':'Locked',
-		'01':'Dont have GPS time',
-		'03':'PDOP is too high',
-		'08':'No usable satallites',
-		'09':'1 Satellite',
-		'0a':'2 Satellites',
-		'0b':'3 Satellites',
-		'0c':'The chosen sat in unusable',
-		'10':'TRAIM rejected the fix'}
-	# Status 00 is originally 'Doing fixes' in TSIP documentation
-
-# Timing Flag
-timingFlags={'00':'GPS Time',
-		'01':'UTC Time',
-		'10':'GPS PPS',
-		'11':'UTC PPS',
-		'20':'Time is set',
-		'21':'Time is not set',
-		'30':'Have UTC info',
-		'31':'No UTC info',
-		'40':'Time from GPS',
-		'41':'Time from user'}
-
 # Initialize variables
 removeIndex=[]
 timeIndex=0
-
 
 # Continuously monitor serial line
 while True:

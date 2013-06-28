@@ -63,6 +63,19 @@ def extractMessage(idpacket,hexline):
 			
 def printPrimary(primTiming):
 
+
+	# Define timing flags
+	timingFlags={'00':'GPS Time',
+	        '01':'UTC Time',
+	        '10':'GPS PPS',
+	        '11':'UTC PPS',
+	        '20':'Time is set',
+	        '21':'Time is not set',
+	        '30':'Have UTC info',
+    	    '31':'No UTC info',
+    	    '40':'Time from GPS',
+	        '41':'Time from user'}
+
 	# Select and convert date (Hex string to decimal to string)
 	seconds=str(int(primTiming[10*2-2:10*2],16))
 	minutes=str(int(primTiming[11*2-2:11*2],16))
@@ -102,8 +115,27 @@ def printPrimary(primTiming):
 
 
 def printSecondary(secTiming):
+
+	# Define GPS Status Flags
+	gpsStatus={'00':'Locked',
+		'01':'Dont have GPS time',
+		'03':'PDOP is too high',
+		'08':'No usable satallites',
+		'09':'1 Satellite',
+		'0a':'2 Satellites',
+		'0b':'3 Satellites',
+		'0c':'The chosen sat in unusable',
+		'10':'TRAIM rejected the fix'}
+	    # Status 00 is originally 'Doing fixes' in TSIP documentation
 	
-			# Extract parameters of interest
+	# Define GPS Alert Status
+	alerts=[]
+	alertList=['Not used','Antenna open','Antenna shorted','Not tracking satellites',
+		'Not used','Survey in progress','No stored position','Leap second pending',
+		'In test mode','Position is questionable','Not used','Almanac not complete',
+		'PPS was not generated']
+
+	# Extract parameters of interest
 	fix=secTiming[12*2-2:12*2]
 	hexTemp=secTiming[32*2-2:35*2]
 	hexLat=secTiming[36*2-2:43*2]
