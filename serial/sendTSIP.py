@@ -42,17 +42,14 @@ while True:
 		break
 	elif result in 'raw':
 		raw=raw_input('Message:')
-		print 'Writing: ' + str(raw)
-		ser.write(raw)
-	elif result in '03':
-		for bin in messages[result]:
-			print 'Writing: ' + str(bin.encode('hex'))
-			ser.write(bin)
+		messages = {'raw':[raw]}
 	elif result in '07':
 		print '	Switching to NMEA can only be reversed by a manual power cycle.'
 		confirm = raw_input('	Continue (y/n)?')
-		if confirm in 'y':
-			ser.write(messages[result])
-	else:
-		ser.write(messages[result])
+		if confirm not in 'y':
+			continue
 
+	# Write message
+	for bin in messages[result]:
+		print 'Writing: ' + str(bin.encode('hex'))
+		ser.write(bin)
