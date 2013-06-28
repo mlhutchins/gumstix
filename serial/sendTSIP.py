@@ -53,3 +53,4 @@ while True:
 	for bin in messages[result]:
 		print 'Writing: ' + str(bin.encode('hex'))
 		ser.write(bin)
+		time.sleep(0.05)
