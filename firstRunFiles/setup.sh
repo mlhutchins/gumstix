@@ -73,7 +73,7 @@ chown sferix /home/sferix/sferics/sferics.log
 
 # Set host access to public_html_static
 chmod a+w /home/sferix/public_html_static
-ln -s /home/sferix/public_html_static /home/host_/public_html_static
+ln -s /home/sferix/public_html_static /home/host/public_html_static
 
 # Create folders at startup
 cp ${DIR}ramdisk.sh /etc/init.d/
@@ -127,8 +127,8 @@ ln -s /etc/init.d/preamp.sh /etc/rc5.d/S90preamp
 # Install preamp scripts for host
 mkdir /home/host/preamp
 cp ${DIR}preamp* /home/host/preamp/
-chown host/home/host/preamp
-chown host/home/host/preamp/*
+chown host /home/host/preamp
+chown host /home/host/preamp/*
 
 
 # Setup wideband and R-files folders
