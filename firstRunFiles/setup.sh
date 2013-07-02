@@ -18,7 +18,7 @@ rm sferix_sudo
 echo 'Creating host account'
 adduser host
 touch host_sudo
-echo 'sferix ALL=(ALL) ALL' >> host_sudo
+echo 'host ALL=(ALL) ALL' >> host_sudo
 chmod 0440 host_sudo
 cp host_sudo /etc/sudoers.d/
 rm host_sudo
@@ -87,12 +87,14 @@ ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 mkdir /home/sferix/gps
 cp ${DIR}readTSIP.py /home/sferix/gps
 cp ${DIR}sendTSIP.py /home/sferix/gps
+cp ${DIR}tsip.py /home/sferix/gps
 cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
 
 mkdir /home/host/gps
 cp ${DIR}readTSIP.py /home/host/gps
 #cp ${DIR}sendTSIP.py /home/host/gps
+cp ${DIR}tsip.py /home/host/gps
 cp ${DIR}startGPSD.py /home/host/gps
 chown -R host /home/host/gps
 
