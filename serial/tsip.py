@@ -1,4 +1,6 @@
 # Python module for reading/writing TSIP message to the serial port
+#
+# Written by: Michael Hutchins
 
 # Import modules
 import serial

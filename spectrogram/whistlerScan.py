@@ -1,3 +1,8 @@
+#whistlerScan.py searches the wideband data files for whistlers based on the amplitude in 
+#	4-4.5 kHz band
+#
+# Written by: Michael Hutchins
+
 from spectrogram import *
 
 # Setup the structure for the input options and arguments

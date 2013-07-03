@@ -1,4 +1,6 @@
 # Python program to read Resolution T serial TSIP messages
+#
+# Written by: Michael Hutchins
 
 # Import modules
 from tsip import *

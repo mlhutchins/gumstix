@@ -1,3 +1,8 @@
+# Calculates the dispersion for triggered or specific whistlers. Plots the resulting
+#	spectrogram of the original and de-chirped whistler waves.
+#
+# Written by: Michael Hutchins
+
 from spectrogram import *
 
 # Setup the structure for the input options and arguments

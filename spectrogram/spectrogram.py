@@ -1,3 +1,8 @@
+# Produces spectrograms from WWLLN wideband VLF data files. Also serves as a module for other
+#	wideband python scripts.
+#
+# Written by: Michael Hutchins
+
 import numpy
 import matplotlib
 matplotlib.use('Agg')
