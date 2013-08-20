@@ -53,6 +53,7 @@ cp ${DIR}asound.txt /home/sferix/asound.txt
 cp ${DIR}asound.state /home/host/asound.state.default
 cp ${DIR}asound.txt /home/host/asound.txt
 cp ${DIR}ntpd /etc/init.d/
+cp ${DIR}hostname /etc/
 
 # Install toga
 echo 'Installing Toga'
@@ -142,6 +143,9 @@ chown sferix /home/sferix/wideband
 # Install VIM syntax file
 tar -zxvf ${DIR}syntax.tar.gz
 cp -r ${DIR}syntax /usr/share/vim/vim72/
+
+# Set timezone to UTC
+cp /usr/share/zoneinfo/UTC /etc/localtime
 
 echo 'Reboot recommended'
 

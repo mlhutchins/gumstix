@@ -14,6 +14,6 @@ echo "10 seconds"
 
 sleep 10
 
-ifconfig eth0 down
-ifconfig eth0 $IP netmask $NETMASK up
-route add default gw $GATEWAY
+/sbin/ifconfig eth0 down
+/sbin/ifconfig eth0 $IP netmask $NETMASK up
+/sbin/route add default gw $GATEWAY
