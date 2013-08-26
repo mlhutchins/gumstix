@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ephy_states version="1.0">
+  <node id="30">
+    <property id="2" value_type="gchararray">main_window</property>
+    <property id="3" value_type="gint">600</property>
+    <property id="4" value_type="gint">500</property>
+    <property id="5" value_type="gboolean">1</property>
+    <property id="8" value_type="gboolean">1</property>
+    <parent id="4"/>
+  </node>
+  <node id="31">
+    <property id="2" value_type="gchararray">prefs_dialog</property>
+    <property id="3" value_type="gint">378</property>
+    <property id="4" value_type="gint">497</property>
+    <property id="5" value_type="gboolean">0</property>
+    <property id="8" value_type="gboolean">1</property>
+    <parent id="4"/>
+  </node>
+  <node id="32">
+    <property id="2" value_type="gchararray">bookmark_properties_list</property>
+    <property id="10" value_type="gboolean">0</property>
+    <parent id="4"/>
+  </node>
+</ephy_states>

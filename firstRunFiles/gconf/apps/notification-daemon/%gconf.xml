@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<gconf>
+	<entry name="popup_location" mtime="1377202041" type="string">
+		<stringvalue>bottom_right</stringvalue>
+	</entry>
+</gconf>

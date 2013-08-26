@@ -92,6 +92,11 @@ cp ${DIR}tsip.py /home/sferix/gps
 cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
 
+# Install GPSD start in root
+mkdir /home/root/gps
+cp ${DIR}startGPSD.py /home/root/gps
+
+# Install TSIP programs for host
 mkdir /home/host/gps
 cp ${DIR}readTSIP.py /home/host/gps
 #cp ${DIR}sendTSIP.py /home/host/gps
@@ -101,6 +106,9 @@ chown -R host /home/host/gps
 
 # Install sferix crontab
 crontab -u sferix ${DIR}crontab_install
+
+# Instal root crontab
+crontab -u root ${DIR}crontab_install_root
 
 # Create gps.log file
 touch /home/sferix/public_html/gps.log
@@ -117,6 +125,7 @@ mv /usr/share/apache2/htdocs /usr/share/apache2/htdocs.orig
 ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
 cp ${DIR}index.html /home/sferix/public_html_static/
+cp ${DIR}sample_vlf.png /home/sferix/public_html_station/vlf.png
 
 # Install preamp startup scripts
 echo "Installing preamp scripts"
@@ -147,5 +156,19 @@ cp -r ${DIR}syntax /usr/share/vim/vim72/
 # Set timezone to UTC
 cp /usr/share/zoneinfo/UTC /etc/localtime
 
-echo 'Reboot recommended'
+# Install version file to sferix and host
+cp ${DIR}version.txt /home/host/
+cp ${DIR}version.txt /home/sferix/
 
+# Setup terminal alias on desktop
+cp -r ${DIR}Desktop /home/sferix/
+cp -r ${DIR}Desktop /home/host/
+
+# Set the vlf.png as the Firefox homepage
+cp -r ${DIR}gconf /home/sferix/.gconf
+cp -r ${DIR}gnome2 /home/sferix/.gnome2
+cp -r ${DIR}gconf /home/host/.gconf
+cp -r ${DIR}gnome2 /home/host/.gnome2
+
+echo 'Reboot recommended'
+echo 'Check post_setup.txt'
