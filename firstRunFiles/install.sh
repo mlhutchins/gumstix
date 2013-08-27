@@ -7,11 +7,6 @@ dhclient
 echo 'Installing packages...'
 opkg update
 opkg install gpsd
-
-# Update package repository
-echo 'src/gz angstrom-base http://feeds.angstrom-distribution.org/feeds/core/ipk/eglibc/armv7a/base' > /media/rootfs/etc/opkg/angstrom-base.conf
-
-opkg update
 opkg install gcc
 opkg install libstdc++6
 opkg install python-pyserial
