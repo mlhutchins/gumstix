@@ -66,7 +66,6 @@ sync
 
 # Adjust Network and opkg parameters
 echo 'Adjusting parameters'
-echo 'src/gz angstrom-base http://feeds.angstrom-distribution.org/feeds/core/ipk/eglibc/armv7a/base' > /media/rootfs/etc/opkg/angstrom-base.conf
 NET=/media/rootfs/etc/network/interfaces
 
 cp $NET ${NET}.defaults
