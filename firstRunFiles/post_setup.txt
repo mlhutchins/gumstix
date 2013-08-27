@@ -1,3 +1,4 @@
 List of final setup tasks:
 
-1. Create a version.txt file in the sferix home directory
+1. Set terminal.app as a shortcut on the desktop
+2. Set vlf.png as the browser homepage

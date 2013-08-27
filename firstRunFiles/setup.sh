@@ -164,11 +164,5 @@ cp ${DIR}version.txt /home/sferix/
 cp -r ${DIR}Desktop /home/sferix/
 cp -r ${DIR}Desktop /home/host/
 
-# Set the vlf.png as the Firefox homepage
-cp -r ${DIR}gconf /home/sferix/.gconf
-cp -r ${DIR}gnome2 /home/sferix/.gnome2
-cp -r ${DIR}gconf /home/host/.gconf
-cp -r ${DIR}gnome2 /home/host/.gnome2
-
 echo 'Reboot recommended'
 echo 'Check post_setup.txt'

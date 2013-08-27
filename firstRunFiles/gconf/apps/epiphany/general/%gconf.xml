@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<gconf>
-	<entry name="homepage" mtime="1377538430" type="string">
-		<stringvalue>file:///media/ram/public_html/vlf.png</stringvalue>
-	</entry>
-</gconf>

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<gconf>
-	<entry name="downloads_folder" mtime="1377538427" type="string">
-		<stringvalue>Desktop</stringvalue>
-	</entry>
-	<entry name="open" mtime="1377538418" type="string">
-		<stringvalue>/media/ram/public_html</stringvalue>
-	</entry>
-</gconf>
