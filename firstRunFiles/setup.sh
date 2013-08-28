@@ -121,7 +121,7 @@ mv /usr/share/apache2/htdocs /usr/share/apache2/htdocs.orig
 ln -s /home/sferix/public_html /usr/share/apache2/htdocs
 chmod a+rx /home/sferix/public_html
 cp ${DIR}index.html /home/sferix/public_html_static/
-cp ${DIR}sample_vlf.png /home/sferix/public_html_station/vlf.png
+cp ${DIR}sample_vlf.png /home/sferix/public_html_static/vlf.png
 
 # Install preamp startup scripts
 echo "Installing preamp scripts"
@@ -161,4 +161,6 @@ cp -r ${DIR}Desktop /home/sferix/
 cp -r ${DIR}Desktop /home/host/
 
 echo 'Reboot recommended'
-echo 'Check post_setup.txt'
+echo 'Post Setup Tasks:'
+echo ''
+cat ${DIR}post_setup.txt 
