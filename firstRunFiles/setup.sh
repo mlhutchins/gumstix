@@ -159,6 +159,8 @@ cp ${DIR}version.txt /home/sferix/
 # Setup terminal alias on desktop
 cp -r ${DIR}Desktop /home/sferix/
 cp -r ${DIR}Desktop /home/host/
+chown -R sferix /home/sferix/Desktop
+chown -R host /home/host/Desktop
 
 echo 'Reboot recommended'
 echo 'Post Setup Tasks:'
