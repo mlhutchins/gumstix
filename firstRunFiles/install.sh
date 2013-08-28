@@ -23,6 +23,10 @@ opkg install apache2
 opkg install openssh-keygen
 opkg install openssh-ssh
 
+echo 'Upgrading All System Software...'
+opkg update
+opkg upgrade
+
 # Update and set clock
 echo 'Setting clock'
 /usr/bin/ntpdate -s -u bigben.cac.washington.edu
