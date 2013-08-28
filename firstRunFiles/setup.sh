@@ -92,10 +92,6 @@ cp ${DIR}tsip.py /home/sferix/gps
 cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
 
-# Install GPSD start in root
-mkdir /home/root/gps
-cp ${DIR}startGPSD.py /home/root/gps
-
 # Install TSIP programs for host
 mkdir /home/host/gps
 cp ${DIR}readTSIP.py /home/host/gps
