@@ -1,0 +1,6 @@
+# Generic Gumstix Station Crontab
+
+PATH=/usr/bin:/bin:/home/sferix/bin:/home/sferix
+
+0,5,10,15,20,25,30,35,30,45,50,55 * * * * /usr/sbin/gpsd -b -n /dev/ttyO0 &                                           
+
