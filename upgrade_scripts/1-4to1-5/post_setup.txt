@@ -1,4 +1,5 @@
 List of final upgrade tasks:
 
 1. Set vlf.png as the browser homepage
-2. Reboot
+2. Redo any changes made to sferix crontab
+3. Reboot
