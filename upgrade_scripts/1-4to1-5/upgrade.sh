@@ -28,6 +28,9 @@ echo 'Updating opkg'
 echo ' '
 opkg update
 
+echo 'Installing GPSD'
+opkg install gpsd
+
 echo 'Upgrading all software'
 echo ' '
 opkg upgrade
