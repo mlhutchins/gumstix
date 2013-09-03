@@ -12,13 +12,7 @@ import sys
 
 # If gpsd is currently using serialPort, kill gpsd
 def kill_gpsd(serialPort):
-	gpsd = os.popen('ps ax | grep gpsd').read()
-	if serialPort in gpsd:
-		gpsd_check = raw_input('Terminate GPSD? (y/n)')
-		if 'y' in gpsd_check:
-			os.system('killall gpsd')
-		else:
-			sys.exit('Serial port in use by gpsd')
+	os.system('killall gpsd')
 		
 # Open up serialPort, return handle ser
 def setup_serial(serialPort):
