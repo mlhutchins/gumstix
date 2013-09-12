@@ -24,8 +24,9 @@ cp host_sudo /etc/sudoers.d/
 rm host_sudo
 
 # Set user path
-echo PATH=${PATH}:/home/sferix/bin > /home/sferix/.profile
-echo export PATH >> /home/sferix/.profile
+cp profile /home/sferix/.profile
+cp profile /home/host/.profile
+cp profile /home/root/.profile
 
 # Copy over configuration files
 echo 'Copying Configuration Files'
