@@ -5,7 +5,10 @@
 
 start(){
 	echo -n "Setting GPS configuration"
-	python /home/root/gps/Configuration.py
+	killall ntpd
+	python /home/root/gps/gpsConfiguration.py
+	/usr/sbin/gpsd -b -n /dev/ttyO0 & 
+	/etc/init.d/ntpd start
 }
 stop(){
 	echo -n "Nothing done."
