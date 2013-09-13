@@ -85,13 +85,21 @@ ln -s /etc/init.d/ramdisk.sh /etc/rc5.d/S90ramdisk
 cp ${DIR}setsnd.sh /etc/init.d/
 ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
+# Configure GPS on startup
+cp ${DIR}configureGPS.sh /etc/init.d/
+ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S90configureGPS
+
 # Install TSIP programs
 mkdir /home/sferix/gps
 cp ${DIR}readTSIP.py /home/sferix/gps
 cp ${DIR}sendTSIP.py /home/sferix/gps
 cp ${DIR}tsip.py /home/sferix/gps
-cp ${DIR}startGPSD.py /home/sferix/gps
 chown -R sferix /home/sferix/gps
+
+# Install TSIP programs for root
+mkdir /home/root/gps
+cp ${DIR}gpsConfiguration.py /home/root/gps
+cp ${DIR}tsip.py /home/root/gps
 
 # Install TSIP programs for host
 mkdir /home/host/gps

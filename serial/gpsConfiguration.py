@@ -1,4 +1,4 @@
-# Python program to send Resolution T serial TSIP messages
+# Python program to configure Resolution T GPS units
 #
 # Written by: Michael Hutchins
 
@@ -27,33 +27,7 @@ messages={'01':['101e4b1003'.decode('hex')], # Hard Reset
 
 #http://gregstoll.dyndns.org/~gregstoll/floattohex/
 
-while True:
-	print 'This program allows sending of prerecorded TSIP messages'
-	print 'Enter the message number to send:'
-	print '		01 - Reset GPS (Hard)'
-	print '		02 - Reset GPS (Warm)'
-	print '		03 - Configre GPS'	
-	print '		06 - Set NMEA Settings'
-	print '		07 - Switch to NMEA'
-	print '		50 - Write Configuration to ROM'
-	print '		raw - Custom message'
-	print '		99 - Exit'	
-
-
-	result=raw_input('Message number:')
-	if result in '99':
-		break
-	elif result in 'raw':
-		raw=raw_input('Message:')
-		messages = {'raw':[raw.decode('hex')]}
-	elif result in '07':
-		print '	Switching to NMEA can only be reversed by a manual power cycle.'
-		confirm = raw_input('	Continue (y/n)?')
-		if confirm not in 'y':
-			continue
-
-	# Write message
-	for bin in messages[result]:
+for bin in messages['03']:
 		print 'Writing: ' + str(bin.encode('hex'))
 		ser.write(bin)
 		time.sleep(0.05)
