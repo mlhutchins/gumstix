@@ -10,6 +10,13 @@ cp sendTSIP.py /home/host/gps/
 rm /home/sferix/gps/startGPSD.py
 rm /home/host/gps/startGPSD.py
 
+echo 'Installing GPS Configuration on startup'
+mkdir /home/root/gps
+cp tsip.py /home/root/gps
+cp gpsConfiguration.py /home/root/gps
+cp configureGPS.sh /etc/init.d/
+ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S90configureGPS
+
 echo 'Updating paths'
 cp profile /home/sferix/.profile
 cp profile /home/host/.profile

@@ -1,4 +1,3 @@
 List of final upgrade tasks:
 
-1. Update GPS software with sendTSIP.py with option 3 then write to ROM with option 50.
-2. Reboot
+1. Reboot
