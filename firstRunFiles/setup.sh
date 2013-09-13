@@ -87,7 +87,7 @@ ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
 # Configure GPS on startup
 cp ${DIR}configureGPS.sh /etc/init.d/
-ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S90configureGPS
+ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S95configureGPS
 
 # Install TSIP programs
 mkdir /home/sferix/gps
