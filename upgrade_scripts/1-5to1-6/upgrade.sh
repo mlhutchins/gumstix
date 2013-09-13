@@ -5,6 +5,8 @@ cp version.txt /home/host/
 echo 'Updated TSIP routines'
 cp tsip.py /home/sferix/gps/
 cp tsip.py /home/host/gps/
+cp sendTSIP.py /home/sferix/gps/
+cp sendTSIP.py /home/host/gps/
 rm /home/sferix/gps/startGPSD.py
 rm /home/host/gps/startGPSD.py
 
