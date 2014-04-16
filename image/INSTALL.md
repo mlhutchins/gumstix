@@ -23,8 +23,18 @@ cd ..
 sudo cp -r firstRunFiles serial user_manual image /media/rootfs/home/root/
 sync
 
-5. Unount and eject microSD card
+5. Setup networking
 
-6. Boot on Gumstix
+NET=/media/rootfs/etc/network/interfaces
 
-7. Run (via root) firstRunFiles/install.sh and firstRunFiles/setup.sh
+sudo cp $NET ${NET}.defaults
+sudo cp firstRunFiles/interfaces $NET
+
+# Disable NetworkManager
+sudo rm -s /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+
+6. Unount and eject microSD card
+
+7. Boot on Gumstix
+
+8. Run (via root) firstRunFiles/install.sh and firstRunFiles/setup.sh
