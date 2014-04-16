@@ -34,7 +34,7 @@ DIR=''
 cp ${DIR}sshd_config /etc/ssh/
 #cp ${DIR}gpelogin /etc/sysconfig/
 cat ${DIR}.bashrc >> /home/sferix/.profile
-cp ${DIR}.bashrc ~/.profile
+cat ${DIR}.bashrc >> /home/root/.profile
 cp ${DIR}.vimrc ~/
 cp ${DIR}.vimrc /home/sferix/
 cp ${DIR}.vimrc /home/host/
@@ -42,8 +42,6 @@ cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
 cp ${DIR}NetworkManager.conf /etc/NetworkManager/
-rm /etc/rc*.d/*NetworkManager
-cp ${DIR}dropbear /etc/init.d/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkSetup.sh /home/sferix/
@@ -61,16 +59,17 @@ echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 
 # Setup toga folders on ramdisk
-mkdir /media/ram/public_html
-mkdir /media/ram/sferics
+RAM='/var/volatile/'
+mkdir ${RAM}public_html
+mkdir ${RAM}sferics
 mkdir /home/sferix/public_html_static
-ln -s /media/ram/sferics /home/sferix/sferics
-ln -s /media/ram/public_html /home/sferix/public_html
+ln -s ${RAM}sferics /home/sferix/sferics
+ln -s ${RAM}public_html /home/sferix/public_html
 touch /home/sferix/sferics/sferics.log
 chown -R sferix /home/sferix
 chown -R sferix /home/sferix/sferics
-chown -R sferix /media/ram/sferics
-chown -R sferix /media/ram/public_html
+chown -R sferix ${RAM}sferics
+chown -R sferix ${RAM}public_html
 chown sferix /home/sferix/sferics/sferics.log
 
 # Set host access to public_html_static
@@ -90,6 +89,7 @@ cp ${DIR}configureGPS.sh /etc/init.d/
 ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S95configureGPS
 
 # Install TSIP programs
+DIR='../serial/'
 mkdir /home/sferix/gps
 cp ${DIR}readTSIP.py /home/sferix/gps
 cp ${DIR}sendTSIP.py /home/sferix/gps
@@ -110,6 +110,7 @@ cp ${DIR}startGPSD.py /home/host/gps
 chown -R host /home/host/gps
 
 # Install sferix crontab
+DIR=''
 crontab -u sferix ${DIR}crontab_install
 
 # Instal root crontab
@@ -155,8 +156,8 @@ mkdir /home/sferix/wideband
 chown sferix /home/sferix/wideband
 
 # Install VIM syntax file
-tar -zxvf ${DIR}syntax.tar.gz
-cp -r ${DIR}syntax /usr/share/vim/vim72/
+#tar -zxvf ${DIR}syntax.tar.gz
+#cp -r ${DIR}syntax /usr/share/vim/vim72/
 
 # Set timezone to UTC
 cp /usr/share/zoneinfo/UTC /etc/localtime
