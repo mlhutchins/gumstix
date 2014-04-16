@@ -166,6 +166,9 @@ cp /usr/share/zoneinfo/UTC /etc/localtime
 cp ${DIR}version.txt /home/host/
 cp ${DIR}version.txt /home/sferix/
 
+# Copy over user manual for desktop placement
+cp ~/user_manual/manual.pdf Desktop/
+
 # Setup terminal alias on desktop
 cp -r ${DIR}Desktop /home/sferix/
 cp -r ${DIR}Desktop /home/host/
