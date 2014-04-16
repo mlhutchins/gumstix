@@ -1,0 +1,19 @@
+Description=Ethernet Network Connectivity (%i)
+Wants=network.target
+Before=network.target
+BindsTo=sys-subsystem-net-devices-%i.device
+After=sys-subsystem-net-devices-%i.device
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/sbin/ifconfig %i up
+ExecStart=/sbin/dhclient %i
+RestartSec=1min
+Restart=on-failure
+
+ExecStop=/sbin/ifconfig %i down
+
+[Install]
+WantedBy=multi-user.target

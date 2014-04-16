@@ -33,6 +33,12 @@ sudo cp firstRunFiles/interfaces $NET
 # Disable NetworkManager
 sudo rm /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
 
+# Enable network.service
+cp firstRunFiles/network-wired@.service /media/rootfs/etc/systemd/system/
+cd /media/rootfs/etc/systemd/system/multi-user.target.wants
+sudo ln -s ../network-wired@.service network-wired@eth0.service
+cd -
+
 6. Unount and eject microSD card
 
 7. Boot on Gumstix
