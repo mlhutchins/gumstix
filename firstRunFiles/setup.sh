@@ -55,6 +55,7 @@ cp ${DIR}ntpd /etc/init.d/
 cp ${DIR}hostname /etc/
 
 # Install toga
+
 echo 'Installing Toga'
 tar -xvf ${DIR}toga.arm.bin.tar -C /home/sferix
 
@@ -106,11 +107,11 @@ mkdir /home/host/gps
 cp ${DIR}readTSIP.py /home/host/gps
 #cp ${DIR}sendTSIP.py /home/host/gps
 cp ${DIR}tsip.py /home/host/gps
+DIR=''
 cp ${DIR}startGPSD.py /home/host/gps
 chown -R host /home/host/gps
 
 # Install sferix crontab
-DIR=''
 crontab -u sferix ${DIR}crontab_install
 
 # Instal root crontab
