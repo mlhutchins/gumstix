@@ -31,7 +31,7 @@ sudo cp $NET ${NET}.defaults
 sudo cp firstRunFiles/interfaces $NET
 
 # Disable NetworkManager
-sudo rm -s /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+sudo rm /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
 
 6. Unount and eject microSD card
 
