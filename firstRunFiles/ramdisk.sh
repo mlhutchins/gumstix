@@ -5,10 +5,10 @@
 
 start(){
 	echo -n "Creating sferics and public_html on ramdisk."
-	mkdir /media/ram/sferics
-	mkdir /media/ram/public_html
-	cp -r /home/sferix/public_html_static/* /media/ram/public_html/
-	chown -R sferix /media/ram/*
+	mkdir /var/volatile/sferics
+	mkdir /var/volatile/public_html
+	cp -r /home/sferix/public_html_static/* /var/volatile/public_html/
+	chown -R sferix /var/volatile/*
 	echo -n "Folders created."
 }
 stop(){
