@@ -9,15 +9,14 @@ Make sure the microSD in located at /dev/sdb!
 
 sudo mk2partsd /dev/sdb 
 
-2. Run these commands to install a new image to a formatted microSD card in /dev/sdb
+2. Mount rootfs partition
+
+3. Run these commands to install a new image to a formatted microSD card in /dev/sdb
 
 cp MLO u-boot.img uImage /media/boot
 sudo tar xaf gumstix-xfce-image-overo.tar.bz2 -C /media/rootfs --strip-components=1
-sync
 
-3. Mount rootfs partition
-
-4. Copy over setup and install files
+4. Copy over setup install files
 
 cd ..
 sudo cp -r firstRunFiles serial user_manual image /media/rootfs/home/root/
@@ -33,14 +32,8 @@ sudo cp firstRunFiles/interfaces $NET
 # Disable NetworkManager
 sudo rm /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
 
-# Enable network.service
-cp firstRunFiles/network-wired@.service /media/rootfs/etc/systemd/system/
-cd /media/rootfs/etc/systemd/system/multi-user.target.wants
-sudo ln -s ../network-wired@.service network-wired@eth0.service
-cd -
-
 6. Unount and eject microSD card
 
-7. Boot on Gumstix
+7. Boot on Gumstix via Serial
 
 8. Run (via root) firstRunFiles/install.sh and firstRunFiles/setup.sh

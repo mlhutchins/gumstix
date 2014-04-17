@@ -85,6 +85,10 @@ ln -s /etc/init.d/ramdisk.sh /etc/rc5.d/S90ramdisk
 cp ${DIR}setsnd.sh /etc/init.d/
 ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
+# Force networking to begin at startup
+cp ${DIR}startNetworking.sh /etc/init.d/
+ln -s /etc/init.d/startNetworking.sh /etc/rc5.d/S89networking
+
 # Configure GPS on startup
 cp ${DIR}configureGPS.sh /etc/init.d/
 ln -s /etc/init.d/configureGPS.sh /etc/rc5.d/S95configureGPS

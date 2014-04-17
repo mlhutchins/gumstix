@@ -2,11 +2,12 @@
 
 # Comment dhclient out if setting up via SSH
 echo 'Starting DHCP'
-dhclient
+dhclient eth0
 
 echo 'Installing packages...'
 smart update
-smart install ntp-utils ntpdate
+smart remove NetworkManager init-ifupdown
+smart install init-ifupdown ntp-utils ntpdate
 
 echo 'Upgrading All System Software...'
 smart upgrade
