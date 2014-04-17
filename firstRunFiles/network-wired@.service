@@ -9,7 +9,6 @@ Type=oneshot
 RemainAfterExit=yes
 
 ExecStart=/sbin/ifconfig %i up
-ExecStart=/sbin/dhclient %i
 RestartSec=1min
 Restart=on-failure
 
