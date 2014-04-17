@@ -8,11 +8,11 @@ After=sys-subsystem-net-devices-%i.device
 Type=oneshot
 RemainAfterExit=yes
 
-ExecStart=/sbin/ifconfig %i up
+ExecStart=/etc/init.d/networking start
 RestartSec=1min
 Restart=on-failure
 
-ExecStop=/sbin/ifconfig %i down
+ExecStop=/etc/init.d/networking stop
 
 [Install]
 WantedBy=multi-user.target

@@ -85,8 +85,10 @@ cp ${DIR}setsnd.sh /etc/init.d/
 ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
 # Force networking to begin at startup
-cp ${DIR}startNetwork.sh /etc/init.d/
-ln -s /etc/init.d/startNetwork.sh /etc/rc5.d/S89networking
+cp ${DIR}network-wired\@.service /etc/systemd/system/
+cd /etc/systemd/system/multi-user.target.wants
+ln -s /etc/systemd/system/network-wired\@.service network-wired@eth0.service
+cd -
 
 # Configure GPS on startup
 cp ${DIR}configureGPS.sh /etc/init.d/

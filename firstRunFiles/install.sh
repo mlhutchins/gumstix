@@ -6,8 +6,7 @@ dhclient eth0
 
 echo 'Installing packages...'
 smart update
-smart remove NetworkManager init-ifupdown
-smart install init-ifupdown ntp-utils ntpdate
+smart install ntp-utils ntpdate
 
 echo 'Upgrading All System Software...'
 smart upgrade
