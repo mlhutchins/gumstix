@@ -10,7 +10,6 @@ RemainAfterExit=yes
 
 ExecStart=/etc/init.d/networking start
 RestartSec=1min
-Restart=on-failure
 
 ExecStop=/etc/init.d/networking stop
 
