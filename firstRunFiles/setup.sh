@@ -41,7 +41,6 @@ cp ${DIR}.vimrc /home/host/
 cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
-cp ${DIR}NetworkManager.conf /etc/NetworkManager/
 cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkSetup.sh /home/sferix/
@@ -86,8 +85,8 @@ cp ${DIR}setsnd.sh /etc/init.d/
 ln -s /etc/init.d/setsnd.sh /etc/rc5.d/S90setsnd
 
 # Force networking to begin at startup
-cp ${DIR}startNetworking.sh /etc/init.d/
-ln -s /etc/init.d/startNetworking.sh /etc/rc5.d/S89networking
+cp ${DIR}startNetwork.sh /etc/init.d/
+ln -s /etc/init.d/startNetwork.sh /etc/rc5.d/S89networking
 
 # Configure GPS on startup
 cp ${DIR}configureGPS.sh /etc/init.d/

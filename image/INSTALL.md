@@ -32,8 +32,10 @@ sudo cp firstRunFiles/interfaces $NET
 # Disable NetworkManager
 sudo rm /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
 
-6. Unount and eject microSD card
+6. Copy over toga.arm.bin.tar (decrypt before copy)
 
-7. Boot on Gumstix via Serial
+7. Unount and eject microSD card
 
-8. Run (via root) firstRunFiles/install.sh and firstRunFiles/setup.sh
+8. Boot on Gumstix via Serial
+
+9. Run (via root) firstRunFiles/install.sh and firstRunFiles/setup.sh
