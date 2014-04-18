@@ -42,6 +42,7 @@ cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
 cp ${DIR}gpsd /etc/default/
+cp ${DIR}sshd.socket /lib/systemd/system/
 cp ${DIR}networkSetup.sh /home/sferix/
 cp ${DIR}networkSetup.sh /home/host/
 cp ${DIR}asound.state /etc/
