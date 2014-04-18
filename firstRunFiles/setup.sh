@@ -41,7 +41,6 @@ cp ${DIR}.vimrc /home/host/
 cp ${DIR}iptables /etc/iptables.rules
 cp ${DIR}resolv.conf /etc/
 cp ${DIR}ntp.conf /etc/
-cp ${DIR}httpd.conf /etc/apache2/
 cp ${DIR}gpsd /etc/default/
 cp ${DIR}networkSetup.sh /home/sferix/
 cp ${DIR}networkSetup.sh /home/host/
@@ -173,6 +172,7 @@ cp ${DIR}version.txt /home/host/
 cp ${DIR}version.txt /home/sferix/
 
 # Copy over user manual for desktop placement
+mkdir Desktop
 cp ~/user_manual/manual.pdf Desktop/
 
 # Setup terminal alias on desktop
