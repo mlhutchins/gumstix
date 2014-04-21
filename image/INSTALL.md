@@ -31,6 +31,7 @@ sudo cp firstRunFiles/interfaces $NET
 
 # Disable NetworkManager
 sudo rm /media/rootfs/etc/systemd/system/multi-user.target.wants/NetworkManager.service
+sudo rm /media/rootfs/etc/systemd/system/dbus-org.freedesktop.NetworkManager.service
 
 6. Copy over toga.arm.bin.tar (decrypt before copy)
 
