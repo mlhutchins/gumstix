@@ -182,6 +182,9 @@ cp -r ${DIR}Desktop /home/host/
 chown -R sferix /home/sferix/Desktop
 chown -R host /home/host/Desktop
 
+# Remove Notes program from startup
+rm /etc/xdg/autostart/xfce4-notes-autostart.desktop
+
 echo 'Reboot recommended'
 echo 'Post Setup Tasks:'
 echo ''
